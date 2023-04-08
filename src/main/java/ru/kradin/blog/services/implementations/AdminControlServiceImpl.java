@@ -11,7 +11,8 @@ import ru.kradin.blog.models.User;
 import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.services.interfaces.AdminControlService;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class AdminControlServiceImpl implements AdminControlService {
@@ -27,13 +28,16 @@ public class AdminControlServiceImpl implements AdminControlService {
     @Override
     @Scheduled(fixedRate = 1000*60*60*24, initialDelay = 1000)
     public void createAdminAccountIfNotExist() {
-        Optional<User> user = userRepository.findByUsername("admin");
-        if(user.isEmpty()){
+        List<User> userList = userRepository.findByRole(Role.ROLE_ADMIN);
+        if(userList.isEmpty()){
             User admin = new User();
             admin.setUsername("admin");
+            admin.setEmail(null);
             admin.setEmailVerified(false);
             admin.setPassword(passwordEncoder.encode("admin"));
             admin.setRole(Role.ROLE_ADMIN);
+            admin.setAccountNonLocked(true);
+            admin.setCreatedAt(LocalDateTime.now());
             userRepository.save(admin);
             log.info("Created admin account");
         }

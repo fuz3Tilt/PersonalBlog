@@ -17,19 +17,19 @@ import ru.kradin.blog.exceptions.UserVerificationTokenAlreadyExistException;
 import ru.kradin.blog.exceptions.UserVerificationTokenNotFoundException;
 import ru.kradin.blog.models.User;
 import ru.kradin.blog.models.UserVerificationToken;
+import ru.kradin.blog.models.additional.UserInfo;
 import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.repositories.UserVerificationTokenRepository;
 import ru.kradin.blog.services.interfaces.EmailService;
-import ru.kradin.blog.services.interfaces.UserService;
-import ru.kradin.blog.models.additional.EmailInfo;
+import ru.kradin.blog.services.interfaces.UserInfoService;
+import ru.kradin.blog.services.interfaces.UserVerificationService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl implements UserService {
-
+public class UserServiceImpl implements UserInfoService, UserVerificationService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
@@ -59,10 +59,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public EmailInfo getEmailInfo(Authentication authentication) {
+    public UserInfo getUserInfo(Authentication authentication) {
         User user = getUserByAuthentication(authentication);
 
-        return new EmailInfo(user.getEmail(),user.isEmailVerified());
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUsername(user.getUsername());
+        userInfo.setEmail(user.getEmail());
+        userInfo.setEmailVerified(user.isEmailVerified());
+        userInfo.setRole(user.getRole());
+        userInfo.setCreatedAt(user.getCreatedAt());
+
+        return userInfo;
     }
 
     @Override
@@ -86,11 +93,14 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail().isEmpty())
             throw new UserDoesNotHaveEmailException();
 
-        Optional<UserVerificationToken> userVerificationToken
+        Optional<UserVerificationToken> userVerificationTokenOptional
                 = userVerificationTokenRepository.findByUserAndTokenPurpose(user,TokenPurpose.EMAIL_CONFIRMATION);
 
-        if(userVerificationToken.isPresent())
-            throw new UserVerificationTokenAlreadyExistException();
+        if(userVerificationTokenOptional.isPresent()) {
+            UserVerificationToken userVerificationToken = userVerificationTokenOptional.get();
+            if(!isTokenExpired(userVerificationToken))
+                throw new UserVerificationTokenAlreadyExistException();
+        }
 
         String token = generateVerificationToken(user,TokenPurpose.EMAIL_CONFIRMATION,5);
         String confirmationUrl = host + "store/email/verify?token=" + token;
@@ -112,6 +122,9 @@ public class UserServiceImpl implements UserService {
 
         UserVerificationToken userVerificationToken = userVerificationTokenOptional.get();
 
+        if (isTokenExpired(userVerificationToken))
+            throw new UserVerificationTokenNotFoundException();
+
         User user = userVerificationToken.getUser();
         user.setEmailVerified(true);
         userRepository.save(user);
@@ -130,11 +143,14 @@ public class UserServiceImpl implements UserService {
         if(!user.isEmailVerified())
             return;
 
-        Optional<UserVerificationToken> userVerificationToken
+        Optional<UserVerificationToken> userVerificationTokenOptional
                 = userVerificationTokenRepository.findByUserAndTokenPurpose(user,TokenPurpose.PASSWORD_RESET);
 
-        if(userVerificationToken.isPresent())
-            return;
+        if(userVerificationTokenOptional.isPresent()) {
+            UserVerificationToken userVerificationToken = userVerificationTokenOptional.get();
+            if (!isTokenExpired(userVerificationToken))
+                return;
+        }
 
         String token = generateVerificationToken(user,TokenPurpose.PASSWORD_RESET,5);
         String passwordResetUrl = host + "store/password/reset?token=" + token;
@@ -148,16 +164,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPasswordWithToken(String token, String password) throws UserVerificationTokenNotFoundException {
-        Optional<UserVerificationToken> userVerificationToken =
+        Optional<UserVerificationToken> userVerificationTokenOptional =
                 userVerificationTokenRepository.findByTokenAndTokenPurpose(token,TokenPurpose.PASSWORD_RESET);
 
-        if (userVerificationToken.isEmpty())
+        if (userVerificationTokenOptional.isEmpty())
             throw new UserVerificationTokenNotFoundException();
 
-        User user = userVerificationToken.get().getUser();
+        UserVerificationToken userVerificationToken = userVerificationTokenOptional.get();
+
+        if (isTokenExpired(userVerificationToken))
+            throw new UserVerificationTokenNotFoundException();
+
+        User user = userVerificationToken.getUser();
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
-        userVerificationTokenRepository.delete(userVerificationToken.get());
+        userVerificationTokenRepository.delete(userVerificationToken);
         log.info("{} password updated.", user.getUsername());
     }
 
@@ -182,5 +203,12 @@ public class UserServiceImpl implements UserService {
         userVerificationToken.setExpiryDate(expiryDate);
         userVerificationTokenRepository.save(userVerificationToken);
         return userVerificationToken.getToken();
+    }
+    private boolean isTokenExpired(UserVerificationToken userVerificationToken){
+        boolean isExpired = userVerificationToken.getExpiryDate().isBefore(LocalDateTime.now());
+        if(isExpired)
+        userVerificationTokenRepository.delete(userVerificationToken);
+
+        return isExpired;
     }
 }
