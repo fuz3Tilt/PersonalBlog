@@ -17,7 +17,6 @@ import ru.kradin.blog.exceptions.UserVerificationTokenAlreadyExistException;
 import ru.kradin.blog.exceptions.UserVerificationTokenNotFoundException;
 import ru.kradin.blog.models.User;
 import ru.kradin.blog.models.UserVerificationToken;
-import ru.kradin.blog.models.additional.UserInfo;
 import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.repositories.UserVerificationTokenRepository;
 import ru.kradin.blog.services.interfaces.EmailService;
@@ -59,17 +58,9 @@ public class UserServiceImpl implements UserInfoService, UserVerificationService
     }
 
     @Override
-    public UserInfo getUserInfo(Authentication authentication) {
+    public User getUser(Authentication authentication) {
         User user = getUserByAuthentication(authentication);
-
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUsername(user.getUsername());
-        userInfo.setEmail(user.getEmail());
-        userInfo.setEmailVerified(user.isEmailVerified());
-        userInfo.setRole(user.getRole());
-        userInfo.setCreatedAt(user.getCreatedAt());
-
-        return userInfo;
+        return user;
     }
 
     @Override

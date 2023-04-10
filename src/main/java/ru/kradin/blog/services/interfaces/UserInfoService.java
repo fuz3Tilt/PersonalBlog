@@ -1,7 +1,7 @@
 package ru.kradin.blog.services.interfaces;
 
 import org.springframework.security.core.Authentication;
-import ru.kradin.blog.models.additional.UserInfo;
+import ru.kradin.blog.models.User;
 
 public interface UserInfoService {
 
@@ -9,5 +9,5 @@ public interface UserInfoService {
 
     public void updatePassword(Authentication authentication, String password);
 
-    public UserInfo getUserInfo(Authentication authentication);
+    public User getUser(Authentication authentication);
 }
