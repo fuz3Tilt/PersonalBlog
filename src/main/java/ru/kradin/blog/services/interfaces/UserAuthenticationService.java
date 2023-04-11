@@ -5,5 +5,5 @@ import ru.kradin.blog.models.User;
 
 public interface UserAuthenticationService {
 
-    public User getUserFromAuthentication(Authentication authentication);
+    public User getCurentUser(Authentication authentication);
 }

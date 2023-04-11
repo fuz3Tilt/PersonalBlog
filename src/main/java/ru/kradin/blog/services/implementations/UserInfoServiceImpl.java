@@ -3,7 +3,6 @@ package ru.kradin.blog.services.implementations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,9 +25,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     UserAuthenticationService userAuthenticationService;
 
     @Override
-    @PreAuthorize("isAuthenticated()")
     public void updateEmail(Authentication authentication, String email) {
-        User user = userAuthenticationService.getUserFromAuthentication(authentication);
+        User user = userAuthenticationService.getCurentUser(authentication);
 
         user.setEmail(email);
         user.setEmailVerified(false);
@@ -37,9 +35,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
-    @PreAuthorize("isAuthenticated()")
     public void updatePassword(Authentication authentication, String password) {
-        User user = userAuthenticationService.getUserFromAuthentication(authentication);
+        User user = userAuthenticationService.getCurentUser(authentication);
 
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);

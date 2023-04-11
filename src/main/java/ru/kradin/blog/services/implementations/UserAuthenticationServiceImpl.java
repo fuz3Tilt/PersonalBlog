@@ -15,7 +15,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     UserRepository userRepository;
 
     @Override
-    public User getUserFromAuthentication(Authentication authentication) {
+    public User getCurentUser(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
 
