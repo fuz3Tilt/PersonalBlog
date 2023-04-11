@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.enums.TokenPurpose;
@@ -20,7 +18,7 @@ import ru.kradin.blog.models.UserVerificationToken;
 import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.repositories.UserVerificationTokenRepository;
 import ru.kradin.blog.services.interfaces.EmailService;
-import ru.kradin.blog.services.interfaces.UserInfoService;
+import ru.kradin.blog.services.interfaces.UserAuthenticationService;
 import ru.kradin.blog.services.interfaces.UserVerificationService;
 
 import java.time.LocalDateTime;
@@ -28,8 +26,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserServiceImpl implements UserInfoService, UserVerificationService {
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+public class UserVerificationServiceImpl implements UserVerificationService {
+    private static final Logger log = LoggerFactory.getLogger(UserVerificationServiceImpl.class);
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -43,40 +41,16 @@ public class UserServiceImpl implements UserInfoService, UserVerificationService
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    UserAuthenticationService userAuthenticationService;
+
     @Value("${store.host}")
     String host;
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public void updateEmail(Authentication authentication, String email) {
-        User user = getUserByAuthentication(authentication);
-
-        user.setEmail(email);
-        user.setEmailVerified(false);
-        userRepository.save(user);
-        log.info("{} email updated.", user.getUsername());
-    }
-
-    @Override
-    public User getUser(Authentication authentication) {
-        User user = getUserByAuthentication(authentication);
-        return user;
-    }
-
-    @Override
-    @PreAuthorize("isAuthenticated()")
-    public void updatePassword(Authentication authentication, String password) {
-        User user = getUserByAuthentication(authentication);
-
-        user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
-        log.info("{} password updated.", user.getUsername());
-    }
-
-    @Override
-    @PreAuthorize("isAuthenticated()")
     public void sendVerificationEmail(Authentication authentication) throws UserDoesNotHaveEmailException, EmailAlreadyVerifiedException, UserVerificationTokenAlreadyExistException {
-        User user = getUserByAuthentication(authentication);
+        User user = userAuthenticationService.getUserFromAuthentication(authentication);
 
         if (user.isEmailVerified())
             throw new EmailAlreadyVerifiedException();
@@ -173,17 +147,6 @@ public class UserServiceImpl implements UserInfoService, UserVerificationService
         log.info("{} password updated.", user.getUsername());
     }
 
-    private User getUserByAuthentication(Authentication authentication) throws UsernameNotFoundException{
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String username = userDetails.getUsername();
-
-        Optional<User> user = userRepository.findByUsername(username);
-
-        if(user.isEmpty())
-            throw new UsernameNotFoundException("User not found");
-
-        return user.get();
-    }
     private String generateVerificationToken(User user, TokenPurpose tokenPurpose, int tokenLifetimeInMinutes){
         String token = UUID.randomUUID().toString();
         LocalDateTime expiryDate = LocalDateTime.now().plusMinutes(tokenLifetimeInMinutes);
@@ -198,7 +161,7 @@ public class UserServiceImpl implements UserInfoService, UserVerificationService
     private boolean isTokenExpired(UserVerificationToken userVerificationToken){
         boolean isExpired = userVerificationToken.getExpiryDate().isBefore(LocalDateTime.now());
         if(isExpired)
-        userVerificationTokenRepository.delete(userVerificationToken);
+            userVerificationTokenRepository.delete(userVerificationToken);
 
         return isExpired;
     }

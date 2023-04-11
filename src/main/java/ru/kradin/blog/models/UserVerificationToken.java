@@ -45,19 +45,19 @@ public class UserVerificationToken {
         this.token = token;
     }
 
-    public LocalDateTime getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(LocalDateTime expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
     public TokenPurpose getTokenPurpose() {
         return tokenPurpose;
     }
 
     public void setTokenPurpose(TokenPurpose tokenPurpose) {
         this.tokenPurpose = tokenPurpose;
+    }
+
+    public LocalDateTime getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(LocalDateTime expiryDate) {
+        this.expiryDate = expiryDate;
     }
 }

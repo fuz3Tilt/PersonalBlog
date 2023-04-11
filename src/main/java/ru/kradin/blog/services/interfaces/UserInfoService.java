@@ -9,5 +9,4 @@ public interface UserInfoService {
 
     public void updatePassword(Authentication authentication, String password);
 
-    public User getUser(Authentication authentication);
 }
