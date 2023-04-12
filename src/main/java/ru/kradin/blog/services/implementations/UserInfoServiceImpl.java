@@ -25,6 +25,13 @@ public class UserInfoServiceImpl implements UserInfoService {
     UserAuthenticationService userAuthenticationService;
 
     @Override
+    public User getUserInfo(Authentication authentication) {
+        User user = userAuthenticationService.getCurentUser(authentication);
+        user.setPassword(null);
+        return user;
+    }
+
+    @Override
     public void updateEmail(Authentication authentication, String email) {
         User user = userAuthenticationService.getCurentUser(authentication);
 

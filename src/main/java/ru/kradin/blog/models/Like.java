@@ -21,6 +21,13 @@ public class Like {
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
+    @PostLoad
+    private void onLoad(){
+        user.setPassword(null);
+        user.setEmail(null);
+        user.setEmailVerified(false);
+    }
+
     public long getId() {
         return id;
     }

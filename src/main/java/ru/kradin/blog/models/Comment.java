@@ -34,6 +34,11 @@ public class Comment {
     private void onLoad() {
         if (deleted) {
             user = null;
+            text = null;
+        } else {
+            user.setPassword(null);
+            user.setEmail(null);
+            user.setEmailVerified(false);
         }
     }
 
