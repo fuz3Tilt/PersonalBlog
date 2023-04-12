@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+    List<User> findByAccountNonLocked(boolean accountNonLocked);
+
     List<User> findByRole(Role role);
 
     Optional<User> findByUsername(String username);

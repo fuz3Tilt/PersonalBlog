@@ -1,5 +1,6 @@
 package ru.kradin.blog.services.implementations;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class PostServiceImpl implements PostService {
     private static final Logger log = LoggerFactory.getLogger(PostServiceImpl.class);
 
@@ -34,6 +34,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Transactional
     public void createPost(Post post) {
         post.setCreatedAt(LocalDateTime.now());
         postRepository.save(post);
@@ -41,6 +43,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Transactional
     public void updatePost(Post post) throws PostNotFoundException {
         Post existingPost = postRepository.findById(post.getId()).orElseThrow(() -> new PostNotFoundException());
         existingPost.setTitle(post.getTitle());
@@ -50,6 +54,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Transactional
     public void deletePostById(long id) {
         postRepository.deleteById(id);
         log.info("Post with id {} deleted."+id);

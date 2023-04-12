@@ -1,5 +1,6 @@
 package ru.kradin.blog.services.implementations;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.models.User;
 import ru.kradin.blog.repositories.UserRepository;
-import ru.kradin.blog.services.interfaces.UserAuthenticationService;
+import ru.kradin.blog.services.interfaces.AuthenticatedUserService;
 import ru.kradin.blog.services.interfaces.UserInfoService;
 
 @Service
@@ -22,18 +23,19 @@ public class UserInfoServiceImpl implements UserInfoService {
     UserRepository userRepository;
 
     @Autowired
-    UserAuthenticationService userAuthenticationService;
+    AuthenticatedUserService authenticatedUserService;
 
     @Override
     public User getUserInfo(Authentication authentication) {
-        User user = userAuthenticationService.getCurentUser(authentication);
+        User user = authenticatedUserService.getCurentUser(authentication);
         user.setPassword(null);
         return user;
     }
 
     @Override
+    @Transactional
     public void updateEmail(Authentication authentication, String email) {
-        User user = userAuthenticationService.getCurentUser(authentication);
+        User user = authenticatedUserService.getCurentUser(authentication);
 
         user.setEmail(email);
         user.setEmailVerified(false);
@@ -42,8 +44,9 @@ public class UserInfoServiceImpl implements UserInfoService {
     }
 
     @Override
+    @Transactional
     public void updatePassword(Authentication authentication, String password) {
-        User user = userAuthenticationService.getCurentUser(authentication);
+        User user = authenticatedUserService.getCurentUser(authentication);
 
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);

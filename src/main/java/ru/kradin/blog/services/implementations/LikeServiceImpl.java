@@ -1,5 +1,6 @@
 package ru.kradin.blog.services.implementations;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import ru.kradin.blog.repositories.CommentRepository;
 import ru.kradin.blog.repositories.LikeRepository;
 import ru.kradin.blog.repositories.PostRepository;
 import ru.kradin.blog.services.interfaces.LikeService;
-import ru.kradin.blog.services.interfaces.UserAuthenticationService;
+import ru.kradin.blog.services.interfaces.AuthenticatedUserService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -34,12 +35,13 @@ public class LikeServiceImpl implements LikeService {
     CommentRepository commentRepository;
 
     @Autowired
-    UserAuthenticationService userAuthenticationService;
+    AuthenticatedUserService authenticatedUserService;
 
     @Override
-    public void togglePostLike(Authentication authentication, long postId) throws PostNotFoundException {
-        User user = userAuthenticationService.getCurentUser(authentication);
-        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException());
+    @Transactional
+    public void togglePostLike(Authentication authentication, Post post) throws PostNotFoundException {
+        User user = authenticatedUserService.getCurentUser(authentication);
+        post = postRepository.findById(post.getId()).orElseThrow(() -> new PostNotFoundException());
 
         Optional<Like> likeOptional = likeRepository.findByUserAndPost(user, post);
         if(likeOptional.isPresent()){
@@ -57,9 +59,10 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
-    public void toggleCommentLike(Authentication authentication, long commentId) throws CommentNotFoundException {
-        User user = userAuthenticationService.getCurentUser(authentication);
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException());
+    @Transactional
+    public void toggleCommentLike(Authentication authentication, Comment comment) throws CommentNotFoundException {
+        User user = authenticatedUserService.getCurentUser(authentication);
+        comment = commentRepository.findById(comment.getId()).orElseThrow(() -> new CommentNotFoundException());
 
         Optional<Like> likeOptional = likeRepository.findByUserAndComment(user, comment);
         if (likeOptional.isPresent()) {

@@ -1,5 +1,6 @@
 package ru.kradin.blog.services.implementations;
 
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ public class UserVerificationTokenServiceImpl {
     private UserVerificationTokenRepository tokenRepository;
 
     @Scheduled(fixedRate = 1000*60*60*24, initialDelay = 1000)
+    @Transactional
     public void removeExpiredTokens() {
         tokenRepository.deleteByExpiryDateLessThan(LocalDateTime.now());
         log.info("Expired verification tokens removed");

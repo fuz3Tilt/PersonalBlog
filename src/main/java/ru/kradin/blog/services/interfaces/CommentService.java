@@ -7,9 +7,9 @@ import ru.kradin.blog.models.Comment;
 
 public interface CommentService {
 
-    public void addCommentToPost(Authentication authentication, Comment comment, long postId) throws PostNotFoundException;
+    public void addCommentToPost(Authentication authentication, Comment comment) throws PostNotFoundException;
 
-    public void addCommentToComment(Authentication authentication, Comment comment, long postId, long parentCommentId) throws PostNotFoundException, CommentNotFoundException;
+    public void addCommentToComment(Authentication authentication, Comment comment) throws PostNotFoundException, CommentNotFoundException;
 
-    public void deleteCommentByAuthenticationAndId(Authentication authentication, long commentId) throws CommentNotFoundException;
+    public void deleteComment(Authentication authentication, Comment comment) throws CommentNotFoundException;
 }
