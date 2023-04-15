@@ -1,6 +1,8 @@
 package ru.kradin.blog.services.implementations;
 
 import javax.transaction.Transactional;
+
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +41,9 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     @Transactional
-    public void togglePostLike(Authentication authentication, Post post) throws PostNotFoundException {
+    public void togglePostLike(Authentication authentication, long postId) throws PostNotFoundException {
         User user = authenticatedUserService.getCurentUser(authentication);
-        post = postRepository.findById(post.getId()).orElseThrow(() -> new PostNotFoundException());
+        Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException());
 
         Optional<Like> likeOptional = likeRepository.findByUserAndPost(user, post);
         if(likeOptional.isPresent()){
@@ -60,9 +62,9 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     @Transactional
-    public void toggleCommentLike(Authentication authentication, Comment comment) throws CommentNotFoundException {
+    public void toggleCommentLike(Authentication authentication, long commentID) throws CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser(authentication);
-        comment = commentRepository.findById(comment.getId()).orElseThrow(() -> new CommentNotFoundException());
+        Comment comment = commentRepository.findById(commentID).orElseThrow(() -> new CommentNotFoundException());
 
         Optional<Like> likeOptional = likeRepository.findByUserAndComment(user, comment);
         if (likeOptional.isPresent()) {

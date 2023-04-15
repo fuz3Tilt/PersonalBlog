@@ -1,11 +1,14 @@
 package ru.kradin.blog.services.implementations;
 
 import javax.transaction.Transactional;
+
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.kradin.blog.dto.CommentDTO;
 import ru.kradin.blog.exceptions.CommentNotFoundException;
 import ru.kradin.blog.exceptions.PostNotFoundException;
 import ru.kradin.blog.models.Comment;
@@ -31,39 +34,38 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     AuthenticatedUserService authenticatedUserService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     @Transactional
-    public void addCommentToPost(Authentication authentication, Comment comment) throws PostNotFoundException {
+    public void addCommentToPost(Authentication authentication, CommentDTO commentDTO) throws PostNotFoundException {
         User user = authenticatedUserService.getCurentUser(authentication);
-        Post post = postRepository.findById(comment.getParentPost().getId()).orElseThrow(() -> new PostNotFoundException());
+        Comment comment = modelMapper.map(commentDTO, Comment.class);
         comment.setUser(user);
-        comment.setParentPost(post);
         comment.setDeleted(false);
         comment.setCreatedAt(LocalDateTime.now());
         commentRepository.save(comment);
-        log.info("User {} added comment to post with id {}",user.getUsername(),post.getId());
+        log.info("User {} added comment to post with id {}",user.getUsername(),comment.getParentPost().getId());
     }
 
     @Override
     @Transactional
-    public void addCommentToComment(Authentication authentication, Comment comment) throws PostNotFoundException, CommentNotFoundException {
+    public void addCommentToComment(Authentication authentication, CommentDTO commentDTO) throws PostNotFoundException, CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser(authentication);
-        Post post = postRepository.findById(comment.getParentPost().getId()).orElseThrow(() -> new PostNotFoundException());
-        Comment parentComment = commentRepository.findById(comment.getParentComment().getId()).orElseThrow(() -> new CommentNotFoundException());
+        Comment comment = modelMapper.map(commentDTO, Comment.class);
         comment.setUser(user);
-        comment.setParentPost(post);
-        comment.setParentComment(parentComment);
         comment.setDeleted(false);
         comment.setCreatedAt(LocalDateTime.now());
         commentRepository.save(comment);
-        log.info("User {} added comment to comment with id {}", user.getUsername(), parentComment.getId());
+        log.info("User {} added comment to comment with id {}", user.getUsername(), comment.getParentComment().getId());
     }
 
     @Override
     @Transactional
-    public void deleteComment(Authentication authentication, Comment comment) throws CommentNotFoundException {
+    public void deleteComment(Authentication authentication, long commentId) throws CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser(authentication);
-        comment = commentRepository.findByUserAndId(user, comment.getId()).orElseThrow(() -> new CommentNotFoundException());
+        Comment comment = commentRepository.findByUserAndId(user, commentId).orElseThrow(() -> new CommentNotFoundException());
         comment.setDeleted(true);
         commentRepository.save(comment);
         log.info("User {} deleted comment with id {}", user.getUsername(), comment.getId());

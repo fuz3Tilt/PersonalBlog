@@ -33,11 +33,15 @@ public class Comment {
     @PostLoad
     private void onLoad() {
         if (deleted) {
-            user = null;
-            text = null;
+            user.setId(0);
+            user.setEmail("none");
+            user.setUsername("none");
+            user.setPassword("none");
+            user.setCreatedAt(LocalDateTime.now());
+            text = "none";
         } else {
-            user.setPassword(null);
-            user.setEmail(null);
+            user.setPassword("none");
+            user.setEmail("none");
             user.setEmailVerified(false);
         }
     }

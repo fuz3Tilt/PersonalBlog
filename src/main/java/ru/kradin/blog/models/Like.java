@@ -23,8 +23,8 @@ public class Like {
 
     @PostLoad
     private void onLoad(){
-        user.setPassword(null);
-        user.setEmail(null);
+        user.setPassword("none");
+        user.setEmail("none");
         user.setEmailVerified(false);
     }
 

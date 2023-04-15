@@ -58,7 +58,7 @@ public class UserVerificationServiceImpl implements UserVerificationService {
     }
 
     @Override
-    @Transactional
+    @Transactional //только для RegistrationService!!!
     public void sendVerificationEmail(User user) throws EmailAlreadyVerifiedException, UserDoesNotHaveEmailException, UserVerificationTokenAlreadyExistException {
         sendVerificationEmailByUser(user);
     }

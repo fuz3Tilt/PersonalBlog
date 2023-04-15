@@ -1,6 +1,9 @@
 package ru.kradin.blog.services.implementations;
 
 import javax.transaction.Transactional;
+
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kradin.blog.dto.UserDTO;
 import ru.kradin.blog.enums.Role;
 import ru.kradin.blog.models.User;
 import ru.kradin.blog.repositories.UserRepository;
@@ -26,22 +30,33 @@ public class AdminServiceImpl implements AdminService {
     PasswordEncoder passwordEncoder;
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     UserRepository userRepository;
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        users.stream().forEach(user -> user.setPassword(null));
-        return users;
+        List<UserDTO> userDTOS = modelMapper.map(users, new TypeToken<List<UserDTO>>() {}.getType());
+        return userDTOS;
     }
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<User> getBannedUsers() {
+    public List<UserDTO> getNonBannedUsers() {
+        List<User> nonBannedUsers = userRepository.findByAccountNonLocked(true);
+        List<UserDTO> nonBannedUserDTOS = modelMapper.map(nonBannedUsers, new TypeToken<List<UserDTO>>() {}.getType());
+        return nonBannedUserDTOS;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public List<UserDTO> getBannedUsers() {
         List<User> bannedUsers = userRepository.findByAccountNonLocked(false);
-        bannedUsers.stream().forEach(user -> user.setPassword(null));
-        return bannedUsers;
+        List<UserDTO> bannedUserDTOS = modelMapper.map(bannedUsers, new TypeToken<List<UserDTO>>() {}.getType());
+        return bannedUserDTOS;
     }
 
     @Override

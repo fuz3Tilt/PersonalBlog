@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kradin.blog.dto.AuthenticationDTO;
 import ru.kradin.blog.dto.UserDTO;
+import ru.kradin.blog.dto.UserRegistrationDTO;
 import ru.kradin.blog.exceptions.EmailAlreadyVerifiedException;
 import ru.kradin.blog.exceptions.UserDoesNotHaveEmailException;
 import ru.kradin.blog.exceptions.UserVerificationTokenAlreadyExistException;
@@ -39,18 +40,17 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping("/registration")
-    public Map<String, String> performRegistration(@RequestBody @Valid UserDTO userDTO,
+    public Map<String, String> performRegistration(@RequestBody @Valid UserRegistrationDTO userRegistrationDTO,
                                                    BindingResult bindingResult) {
-        User user = convertToPerson(userDTO);
 
-        userValidator.validate(user, bindingResult);
+        userValidator.validate(userRegistrationDTO, bindingResult);
 
         if (bindingResult.hasErrors()) {
             return Map.of("message", "Ошибка!");
         }
 
         try {
-            registrationService.register(user);
+            registrationService.register(userRegistrationDTO);
         } catch (EmailAlreadyVerifiedException e) {
             return Map.of("message", "EmailAlreadyVerifiedException");
         } catch (UserDoesNotHaveEmailException e) {
@@ -59,7 +59,7 @@ public class AuthController {
             return Map.of("message", "UserVerificationTokenAlreadyExistException");
         }
 
-        String token = jwtUtil.generateToken(user.getUsername());
+        String token = jwtUtil.generateToken(userRegistrationDTO.getUsername());
         return Map.of("jwt-token", token);
     }
 
@@ -77,9 +77,5 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(authenticationDTO.getUsername());
         return Map.of("jwt-token", token);
-    }
-
-    public User convertToPerson(UserDTO personDTO) {
-        return this.modelMapper.map(personDTO, User.class);
     }
 }

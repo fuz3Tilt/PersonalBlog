@@ -4,6 +4,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kradin.blog.dto.UserRegistrationDTO;
 import ru.kradin.blog.enums.Role;
 import ru.kradin.blog.exceptions.EmailAlreadyVerifiedException;
 import ru.kradin.blog.exceptions.UserDoesNotHaveEmailException;
@@ -28,8 +29,11 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     @Transactional
-    public void register(User user) throws EmailAlreadyVerifiedException, UserDoesNotHaveEmailException, UserVerificationTokenAlreadyExistException {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public void register(UserRegistrationDTO userRegistrationDTO) throws EmailAlreadyVerifiedException, UserDoesNotHaveEmailException, UserVerificationTokenAlreadyExistException {
+        User user = new User();
+        user.setUsername(userRegistrationDTO.getUsername());
+        user.setPassword(passwordEncoder.encode(userRegistrationDTO.getPassword()));
+        user.setEmail(userRegistrationDTO.getEmail());
         user.setEmailVerified(false);
         user.setAccountNonLocked(true);
         user.setRole(Role.ROLE_USER);

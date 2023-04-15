@@ -1,12 +1,15 @@
 package ru.kradin.blog.services.implementations;
 
 import javax.transaction.Transactional;
+
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kradin.blog.dto.UserDTO;
 import ru.kradin.blog.models.User;
 import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.services.interfaces.AuthenticatedUserService;
@@ -20,16 +23,19 @@ public class UserInfoServiceImpl implements UserInfoService {
     PasswordEncoder passwordEncoder;
 
     @Autowired
+    private ModelMapper modelMapper;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
     AuthenticatedUserService authenticatedUserService;
 
     @Override
-    public User getUserInfo(Authentication authentication) {
+    public UserDTO getUserInfo(Authentication authentication) {
         User user = authenticatedUserService.getCurentUser(authentication);
-        user.setPassword(null);
-        return user;
+        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+        return userDTO;
     }
 
     @Override
