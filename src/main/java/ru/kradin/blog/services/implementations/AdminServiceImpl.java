@@ -1,6 +1,6 @@
 package ru.kradin.blog.services.implementations;
 
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminServiceImpl implements AdminService {
 
     private static final Logger log = LoggerFactory.getLogger(AdminServiceImpl.class);
@@ -30,6 +29,7 @@ public class AdminServiceImpl implements AdminService {
     UserRepository userRepository;
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<User> getAllUsers() {
         List<User> users = userRepository.findAll();
         users.stream().forEach(user -> user.setPassword(null));
@@ -37,6 +37,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<User> getBannedUsers() {
         List<User> bannedUsers = userRepository.findByAccountNonLocked(false);
         bannedUsers.stream().forEach(user -> user.setPassword(null));
@@ -45,6 +46,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void toggleUserBan(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if (user.isAccountNonLocked()) {
@@ -63,7 +65,7 @@ public class AdminServiceImpl implements AdminService {
         if(userList.isEmpty()){
             User admin = new User();
             admin.setUsername("admin");
-            admin.setEmail(null);
+            admin.setEmail("");
             admin.setEmailVerified(false);
             admin.setPassword(passwordEncoder.encode("admin"));
             admin.setRole(Role.ROLE_ADMIN);

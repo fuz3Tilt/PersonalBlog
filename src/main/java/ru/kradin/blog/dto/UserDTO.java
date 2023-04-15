@@ -1,41 +1,26 @@
-package ru.kradin.blog.models;
+package ru.kradin.blog.dto;
 
-import javax.persistence.*;
 import ru.kradin.blog.enums.Role;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "usr")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+public class UserDTO {
     private long id;
-    @Column(unique = true, nullable = false)
-    private String email;
-    @Column(name = "email_verified", nullable = false)
-    private boolean emailVerified = false;
-    @Column(unique = true, nullable = false)
     private String username;
-    @Column(nullable = false)
-    private String password;
-    @Column(name = "account_non_locked", nullable = false)
+    private String email;
+    private boolean emailVerified = false;
     private boolean accountNonLocked;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
     private Role role;
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    public User() {
+    public UserDTO() {
     }
 
-    public User(long id, String email, boolean emailVerified, String username, String password, boolean accountNonLocked, Role role, LocalDateTime createdAt) {
+    public UserDTO(long id, String username, String email, boolean emailVerified, boolean accountNonLocked, Role role, LocalDateTime createdAt) {
         this.id = id;
+        this.username = username;
         this.email = email;
         this.emailVerified = emailVerified;
-        this.username = username;
-        this.password = password;
         this.accountNonLocked = accountNonLocked;
         this.role = role;
         this.createdAt = createdAt;
@@ -47,6 +32,14 @@ public class User {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getEmail() {
@@ -63,22 +56,6 @@ public class User {
 
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public boolean isAccountNonLocked() {

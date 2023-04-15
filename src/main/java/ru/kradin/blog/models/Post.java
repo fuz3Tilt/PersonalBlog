@@ -1,6 +1,6 @@
 package ru.kradin.blog.models;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +20,18 @@ public class Post {
     private List<Like> likes;
     @Column(name = "expiry_date", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
+
+    public Post() {
+    }
+
+    public Post(long id, String title, String content, List<Comment> comments, List<Like> likes, LocalDateTime createdAt) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.comments = comments;
+        this.likes = likes;
+        this.createdAt = createdAt;
+    }
 
     public long getId() {
         return id;

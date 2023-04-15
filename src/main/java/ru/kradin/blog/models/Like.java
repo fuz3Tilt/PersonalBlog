@@ -1,10 +1,10 @@
 package ru.kradin.blog.models;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "user_like")
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -16,7 +16,7 @@ public class Like {
     @JoinColumn(name = "comment_id", nullable = true)
     private Comment comment;
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "usr_id", nullable = false)
     private User user;
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
@@ -26,6 +26,17 @@ public class Like {
         user.setPassword(null);
         user.setEmail(null);
         user.setEmailVerified(false);
+    }
+
+    public Like() {
+    }
+
+    public Like(long id, Post post, Comment comment, User user, LocalDateTime createdAt) {
+        this.id = id;
+        this.post = post;
+        this.comment = comment;
+        this.user = user;
+        this.createdAt = createdAt;
     }
 
     public long getId() {

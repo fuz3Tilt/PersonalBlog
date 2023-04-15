@@ -1,6 +1,6 @@
 package ru.kradin.blog.models;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import ru.kradin.blog.enums.TokenPurpose;
 
 import java.time.LocalDateTime;
@@ -20,6 +20,17 @@ public class UserVerificationToken {
     private TokenPurpose tokenPurpose;
     @Column(name = "expiry_date", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime expiryDate;
+
+    public UserVerificationToken() {
+    }
+
+    public UserVerificationToken(long id, User user, String token, TokenPurpose tokenPurpose, LocalDateTime expiryDate) {
+        this.id = id;
+        this.user = user;
+        this.token = token;
+        this.tokenPurpose = tokenPurpose;
+        this.expiryDate = expiryDate;
+    }
 
     public long getId() {
         return id;

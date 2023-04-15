@@ -1,6 +1,6 @@
 package ru.kradin.blog.models;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,6 +40,21 @@ public class Comment {
             user.setEmail(null);
             user.setEmailVerified(false);
         }
+    }
+
+    public Comment() {
+    }
+
+    public Comment(long id, User user, String text, Post parentPost, Comment parentComment, List<Comment> replies, List<Like> likes, boolean deleted, LocalDateTime createdAt) {
+        this.id = id;
+        this.user = user;
+        this.text = text;
+        this.parentPost = parentPost;
+        this.parentComment = parentComment;
+        this.replies = replies;
+        this.likes = likes;
+        this.deleted = deleted;
+        this.createdAt = createdAt;
     }
 
     public long getId() {

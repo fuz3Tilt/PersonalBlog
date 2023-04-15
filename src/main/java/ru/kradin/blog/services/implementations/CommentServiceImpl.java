@@ -1,6 +1,6 @@
 package ru.kradin.blog.services.implementations;
 
-import jakarta.transaction.Transactional;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
