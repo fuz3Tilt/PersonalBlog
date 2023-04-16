@@ -9,7 +9,7 @@ public class UserDTO {
     private String username;
     private String email;
     private boolean emailVerified = false;
-    private boolean accountNonLocked;
+    private boolean accountNonLocked = true;
     private Role role;
     private LocalDateTime createdAt;
 
