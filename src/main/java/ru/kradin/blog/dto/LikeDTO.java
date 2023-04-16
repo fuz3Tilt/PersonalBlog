@@ -3,43 +3,43 @@ package ru.kradin.blog.dto;
 import java.time.LocalDateTime;
 
 public class LikeDTO {
-    private long postId;
-    private long commentId;
+    private PostDTO post;
+    private CommentDTO comment;
     private UserDTO user;
     private LocalDateTime createdAt;
 
     public LikeDTO() {
     }
 
-    public LikeDTO(long postId, long commentId, UserDTO userDTO, LocalDateTime createdAt) {
-        this.postId = postId;
-        this.commentId = commentId;
-        this.user = userDTO;
+    public LikeDTO(PostDTO post, CommentDTO comment, UserDTO user, LocalDateTime createdAt) {
+        this.post = post;
+        this.comment = comment;
+        this.user = user;
         this.createdAt = createdAt;
     }
 
-    public long getPostId() {
-        return postId;
+    public PostDTO getPost() {
+        return post;
     }
 
-    public void setPostId(long postId) {
-        this.postId = postId;
+    public void setPost(PostDTO post) {
+        this.post = post;
     }
 
-    public long getCommentId() {
-        return commentId;
+    public CommentDTO getComment() {
+        return comment;
     }
 
-    public void setCommentId(long commentId) {
-        this.commentId = commentId;
+    public void setComment(CommentDTO comment) {
+        this.comment = comment;
     }
 
-    public UserDTO getUserDTO() {
+    public UserDTO getUser() {
         return user;
     }
 
-    public void setUserDTO(UserDTO userDTO) {
-        this.user = userDTO;
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
     public LocalDateTime getCreatedAt() {

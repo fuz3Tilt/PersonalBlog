@@ -15,15 +15,17 @@ public class Comment {
     private User user;
     @Column(length = 1000,nullable = false)
     private String text;
+    @Column(nullable = false)
+    private int depth;
     @ManyToOne
     @JoinColumn(name = "parent_post_id", nullable = false)
     private Post parentPost;
     @ManyToOne
     @JoinColumn(name = "parent_comment_id", nullable = true)
     private Comment parentComment;
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Comment> replies;
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Like> likes;
     @Column(nullable = false)
     private boolean deleted;
@@ -49,10 +51,11 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(long id, User user, String text, Post parentPost, Comment parentComment, List<Comment> replies, List<Like> likes, boolean deleted, LocalDateTime createdAt) {
+    public Comment(long id, User user, String text, int depth, Post parentPost, Comment parentComment, List<Comment> replies, List<Like> likes, boolean deleted, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.text = text;
+        this.depth = depth;
         this.parentPost = parentPost;
         this.parentComment = parentComment;
         this.replies = replies;
@@ -83,6 +86,14 @@ public class Comment {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     public Post getParentPost() {

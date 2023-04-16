@@ -7,8 +7,9 @@ public class CommentDTO {
     private long id;
     private UserDTO user;
     private String text;
-    private long parentPostId;
-    private long parentCommentId;
+    private int depth;
+    private PostDTO parentPost;
+    private CommentDTO parentComment;
     private List<CommentDTO> replies;
     private List<LikeDTO> likes;
     private boolean deleted;
@@ -17,12 +18,13 @@ public class CommentDTO {
     public CommentDTO() {
     }
 
-    public CommentDTO(long id, UserDTO user, String text, long parentPostId, long parentCommentId, List<CommentDTO> replies, List<LikeDTO> likes, boolean deleted, LocalDateTime createdAt) {
+    public CommentDTO(long id, UserDTO user, String text, int depth, PostDTO parentPost, CommentDTO parentComment, List<CommentDTO> replies, List<LikeDTO> likes, boolean deleted, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.text = text;
-        this.parentPostId = parentPostId;
-        this.parentCommentId = parentCommentId;
+        this.depth = depth;
+        this.parentPost = parentPost;
+        this.parentComment = parentComment;
         this.replies = replies;
         this.likes = likes;
         this.deleted = deleted;
@@ -53,20 +55,28 @@ public class CommentDTO {
         this.text = text;
     }
 
-    public long getParentPostId() {
-        return parentPostId;
+    public int getDepth() {
+        return depth;
     }
 
-    public void setParentPostId(long parentPostId) {
-        this.parentPostId = parentPostId;
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
-    public long getParentCommentId() {
-        return parentCommentId;
+    public PostDTO getParentPost() {
+        return parentPost;
     }
 
-    public void setParentCommentId(long parentCommentId) {
-        this.parentCommentId = parentCommentId;
+    public void setParentPost(PostDTO parentPost) {
+        this.parentPost = parentPost;
+    }
+
+    public CommentDTO getParentComment() {
+        return parentComment;
+    }
+
+    public void setParentComment(CommentDTO parentComment) {
+        this.parentComment = parentComment;
     }
 
     public List<CommentDTO> getReplies() {

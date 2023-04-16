@@ -14,9 +14,9 @@ public class Post {
     private String title;
     @Column(length = 50000,nullable = false)
     private String content;
-    @OneToMany(mappedBy = "parentPost", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "parentPost", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comments;
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Like> likes;
     @Column(name = "expiry_date", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;

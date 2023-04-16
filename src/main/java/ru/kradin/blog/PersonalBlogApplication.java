@@ -20,9 +20,4 @@ public class PersonalBlogApplication {
     public ScheduledExecutorService scheduledExecutorService() {
         return Executors.newScheduledThreadPool(1);
     }
-
-    @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
 }

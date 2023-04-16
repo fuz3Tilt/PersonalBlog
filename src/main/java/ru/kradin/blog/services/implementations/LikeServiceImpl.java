@@ -3,11 +3,13 @@ package ru.kradin.blog.services.implementations;
 import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import ru.kradin.blog.dto.LikeDTO;
 import ru.kradin.blog.exceptions.CommentNotFoundException;
 import ru.kradin.blog.exceptions.PostNotFoundException;
 import ru.kradin.blog.models.Comment;
@@ -21,6 +23,7 @@ import ru.kradin.blog.services.interfaces.LikeService;
 import ru.kradin.blog.services.interfaces.AuthenticatedUserService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,6 +41,16 @@ public class LikeServiceImpl implements LikeService {
 
     @Autowired
     AuthenticatedUserService authenticatedUserService;
+
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Override
+    public List<LikeDTO> getPostLikesByPostId(long id) {
+        List<Like> likes = likeRepository.findByPost_Id(id);
+        List<LikeDTO> likeDTOS = modelMapper.map(likes, new TypeToken<List<LikeDTO>>() {}.getType());
+        return likeDTOS;
+    }
 
     @Override
     @Transactional

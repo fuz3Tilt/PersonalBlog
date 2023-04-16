@@ -6,9 +6,13 @@ import ru.kradin.blog.models.Like;
 import ru.kradin.blog.models.Post;
 import ru.kradin.blog.models.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<Like, Long> {
+
+    List<Like> findByPost_Id(long id);
+
     Optional<Like> findByUserAndPost(User user, Post post);
 
     Optional<Like> findByUserAndComment(User user, Comment comment);

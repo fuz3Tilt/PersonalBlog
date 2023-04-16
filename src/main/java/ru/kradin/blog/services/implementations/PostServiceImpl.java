@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import ru.kradin.blog.dto.PostCreateDTO;
 import ru.kradin.blog.dto.PostDTO;
+import ru.kradin.blog.dto.PostUpdateDTO;
 import ru.kradin.blog.exceptions.PostNotFoundException;
 import ru.kradin.blog.models.Post;
 import ru.kradin.blog.repositories.PostRepository;
@@ -45,8 +47,10 @@ public class PostServiceImpl implements PostService {
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
-    public void createPost(PostDTO postDTO) {
-        Post post = modelMapper.map(postDTO, Post.class);
+    public void createPost(PostCreateDTO postCreateDTO) {
+        Post post = new Post();
+        post.setTitle(postCreateDTO.getTitle());
+        post.setContent(postCreateDTO.getContent());
         post.setCreatedAt(LocalDateTime.now());
         postRepository.save(post);
         log.info("New post with id {} created."+post.getId());
@@ -55,10 +59,10 @@ public class PostServiceImpl implements PostService {
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
-    public void updatePost(PostDTO postDTO) throws PostNotFoundException {
-        Post existingPost = postRepository.findById(postDTO.getId()).orElseThrow(() -> new PostNotFoundException());
-        existingPost.setTitle(postDTO.getTitle());
-        existingPost.setContent(postDTO.getContent());
+    public void updatePost(PostUpdateDTO postUpdateDTO) throws PostNotFoundException {
+        Post existingPost = postRepository.findById(postUpdateDTO.getId()).orElseThrow(() -> new PostNotFoundException());
+        existingPost.setTitle(postUpdateDTO.getTitle());
+        existingPost.setContent(postUpdateDTO.getContent());
         postRepository.save(existingPost);
         log.info("Post with id {} updated."+existingPost.getId());
     }
