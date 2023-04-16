@@ -14,7 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.dto.UserDTO;
 import ru.kradin.blog.enums.Role;
+import ru.kradin.blog.exceptions.CommentNotFoundException;
+import ru.kradin.blog.models.Comment;
 import ru.kradin.blog.models.User;
+import ru.kradin.blog.repositories.CommentRepository;
 import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.services.interfaces.AdminService;
 
@@ -31,6 +34,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    CommentRepository commentRepository;
 
     @Autowired
     UserRepository userRepository;
@@ -57,6 +63,14 @@ public class AdminServiceImpl implements AdminService {
         List<User> bannedUsers = userRepository.findByAccountNonLocked(false);
         List<UserDTO> bannedUserDTOS = modelMapper.map(bannedUsers, new TypeToken<List<UserDTO>>() {}.getType());
         return bannedUserDTOS;
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public void deleteComment(long id) throws CommentNotFoundException {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new CommentNotFoundException());
+        comment.setDeleted(true);
+        commentRepository.save(comment);
     }
 
     @Override

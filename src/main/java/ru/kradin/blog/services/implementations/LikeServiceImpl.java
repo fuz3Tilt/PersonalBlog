@@ -7,6 +7,7 @@ import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.dto.LikeDTO;
@@ -54,6 +55,7 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public void togglePostLike(Authentication authentication, long postId) throws PostNotFoundException {
         User user = authenticatedUserService.getCurentUser(authentication);
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException());
@@ -75,6 +77,7 @@ public class LikeServiceImpl implements LikeService {
 
     @Override
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public void toggleCommentLike(Authentication authentication, long commentID) throws CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser(authentication);
         Comment comment = commentRepository.findById(commentID).orElseThrow(() -> new CommentNotFoundException());

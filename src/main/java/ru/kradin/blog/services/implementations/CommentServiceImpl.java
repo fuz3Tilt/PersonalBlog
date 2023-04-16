@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public void addCommentToPost(Authentication authentication, CommentCreateDTO commentCreateDTO) throws PostNotFoundException {
         User user = authenticatedUserService.getCurentUser(authentication);
         Post parentPost = postRepository.findById(commentCreateDTO.getParentPostId()).orElseThrow(() -> new PostNotFoundException());
@@ -65,6 +67,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public void addCommentToComment(Authentication authentication, CommentCreateDTO commentCreateDTO) throws PostNotFoundException, CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser(authentication);
         Post parentPost = postRepository.findById(commentCreateDTO.getParentPostId()).orElseThrow(() -> new PostNotFoundException());
@@ -83,6 +86,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @PreAuthorize("isAuthenticated()")
     public void deleteComment(Authentication authentication, long commentId) throws CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser(authentication);
         Comment comment = commentRepository.findByUserAndId(user, commentId).orElseThrow(() -> new CommentNotFoundException());
