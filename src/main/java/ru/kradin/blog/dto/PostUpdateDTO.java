@@ -1,8 +1,15 @@
 package ru.kradin.blog.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 public class PostUpdateDTO {
     private long id;
+    @NotEmpty
+    @Size(min = 1, max = 255)
     private String title;
+    @NotEmpty
+    @Size(min = 1, max = 50000)
     private String content;
 
     public PostUpdateDTO() {

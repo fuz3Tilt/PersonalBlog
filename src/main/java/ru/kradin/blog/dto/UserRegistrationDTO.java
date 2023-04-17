@@ -1,8 +1,16 @@
 package ru.kradin.blog.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 public class UserRegistrationDTO {
+    @NotEmpty
+    @Size(min = 3, max = 20)
     private String username;
+    @Size(min = 8, max = 255)
     private String password;
+    @Email
     private String email;
 
     public UserRegistrationDTO() {
