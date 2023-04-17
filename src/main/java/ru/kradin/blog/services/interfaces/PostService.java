@@ -13,9 +13,9 @@ public interface PostService {
 
     public PostDTO getPostById(long id) throws PostNotFoundException;
 
-    public void createPost(PostCreateDTO postCreateDTO);
+    public PostDTO createPost(PostCreateDTO postCreateDTO);
 
-    public void updatePost(PostUpdateDTO postUpdateDTO) throws PostNotFoundException;
+    public PostDTO updatePost(PostUpdateDTO postUpdateDTO) throws PostNotFoundException;
 
     public void deletePostById(long id);
 }
