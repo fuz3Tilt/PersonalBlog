@@ -60,8 +60,8 @@ class ModelMapperConfigTest {
         assertEquals(post.getId(), postDTO.getId());
         assertEquals(post.getTitle(), postDTO.getTitle());
         assertEquals(post.getContent(), postDTO.getContent());
-        assertEquals(post.getComments(), postDTO.getComments());
-        assertEquals(post.getLikes(), postDTO.getLikes());
+        assertEquals(null, postDTO.getComments());
+        assertEquals(null, postDTO.getLikes());
         assertEquals(post.getCreatedAt(), postDTO.getCreatedAt());
     }
 

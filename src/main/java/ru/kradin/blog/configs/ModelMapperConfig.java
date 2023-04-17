@@ -1,6 +1,7 @@
 package ru.kradin.blog.configs;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,14 @@ public class ModelMapperConfig {
                 .setSkipNullEnabled(true)
                 .setFieldMatchingEnabled(true)
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE);
+
+        modelMapper.addMappings(new PropertyMap<Post, PostDTO>() {
+            @Override
+            protected void configure() {
+                skip(destination.getComments());
+                skip(destination.getLikes());
+            }
+        });
 
         return modelMapper;
     }
