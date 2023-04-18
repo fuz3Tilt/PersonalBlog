@@ -5,10 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
-import ru.kradin.blog.dto.CommentDTO;
-import ru.kradin.blog.dto.LikeDTO;
-import ru.kradin.blog.dto.PostDTO;
-import ru.kradin.blog.dto.UserDTO;
+import ru.kradin.blog.dto.*;
 import ru.kradin.blog.enums.Role;
 import ru.kradin.blog.models.Comment;
 import ru.kradin.blog.models.Like;
@@ -40,11 +37,15 @@ class ModelMapperConfigTest {
 
         UserDTO userDTO = modelMapper.map(user, UserDTO.class);
         assertEquals(user.getId(), userDTO.getId());
-        assertEquals(user.getEmail(), userDTO.getEmail());
         assertEquals(user.getUsername(), userDTO.getUsername());
-        assertEquals(user.isEmailVerified(), userDTO.isEmailVerified());
-        assertEquals(user.isAccountNonLocked(), userDTO.isAccountNonLocked());
-        assertEquals(user.getCreatedAt(), userDTO.getCreatedAt());
+
+        UserInfoDTO userInfoDTO = modelMapper.map(user, UserInfoDTO.class);
+        assertEquals(user.getId(), userInfoDTO.getId());
+        assertEquals(user.getEmail(), userInfoDTO.getEmail());
+        assertEquals(user.getUsername(), userInfoDTO.getUsername());
+        assertEquals(user.isEmailVerified(), userInfoDTO.isEmailVerified());
+        assertEquals(user.isAccountNonLocked(), userInfoDTO.isAccountNonLocked());
+        assertEquals(user.getCreatedAt(), userInfoDTO.getCreatedAt());
     }
 
     @Test
