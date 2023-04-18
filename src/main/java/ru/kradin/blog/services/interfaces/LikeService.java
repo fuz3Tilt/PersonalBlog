@@ -10,8 +10,8 @@ public interface LikeService {
 
     public List<LikeDTO> getPostLikesByPostId(long id);
 
-    public void togglePostLike(long postId) throws PostNotFoundException;
+    public long togglePostLike(long postId) throws PostNotFoundException;
 
-    public void toggleCommentLike(long commentId) throws CommentNotFoundException;
+    public long toggleCommentLike(long commentId) throws CommentNotFoundException;
 
 }

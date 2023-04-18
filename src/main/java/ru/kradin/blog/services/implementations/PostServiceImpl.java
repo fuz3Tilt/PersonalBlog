@@ -85,7 +85,9 @@ public class PostServiceImpl implements PostService {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Caching(evict = {
             @CacheEvict(value = "posts", allEntries = true),
-            @CacheEvict(value = "post", key = "#id")
+            @CacheEvict(value = "post", key = "#id"),
+            @CacheEvict(value = "comments", key = "#id"),
+            @CacheEvict(value = "likes", key = "#id")
     })
     @Transactional
     public void deletePostById(long id) {

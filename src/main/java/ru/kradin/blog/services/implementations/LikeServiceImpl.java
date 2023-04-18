@@ -7,6 +7,8 @@ import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.dto.LikeDTO;
@@ -46,6 +48,7 @@ public class LikeServiceImpl implements LikeService {
     private ModelMapper modelMapper;
 
     @Override
+    @Cacheable(value = "likes", key = "#id")
     public List<LikeDTO> getPostLikesByPostId(long id) {
         List<Like> likes = likeRepository.findByPost_Id(id);
         List<LikeDTO> likeDTOS = modelMapper.map(likes, new TypeToken<List<LikeDTO>>() {}.getType());
@@ -55,7 +58,8 @@ public class LikeServiceImpl implements LikeService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public void togglePostLike(long postId) throws PostNotFoundException {
+    @CacheEvict(value = "likes", key = "#result")
+    public long togglePostLike(long postId) throws PostNotFoundException {
         User user = authenticatedUserService.getCurentUser();
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException());
 
@@ -71,14 +75,16 @@ public class LikeServiceImpl implements LikeService {
             likeRepository.save(like);
             log.info("Post {} was liked by {}", post.getId(), user.getUsername());
         }
+        return post.getId();
     }
 
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public void toggleCommentLike(long commentID) throws CommentNotFoundException {
+    @CacheEvict(value = "comments", key = "#result")
+    public long toggleCommentLike(long commentId) throws CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser();
-        Comment comment = commentRepository.findById(commentID).orElseThrow(() -> new CommentNotFoundException());
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException());
 
         Optional<Like> likeOptional = likeRepository.findByUserAndComment(user, comment);
         if (likeOptional.isPresent()) {
@@ -92,5 +98,6 @@ public class LikeServiceImpl implements LikeService {
             likeRepository.save(like);
             log.info("Comment {} was liked by {}", comment.getId(), user.getUsername());
         }
+        return comment.getParentPost().getId();
     }
 }

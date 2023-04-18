@@ -6,6 +6,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
+    @Cacheable(value = "comments", key = "#id")
     public List<CommentDTO> getPostCommentsByPostId(long id) throws PostNotFoundException {
         Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException());
         List<Comment> comments = post.getComments();
@@ -53,6 +56,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
+    @CacheEvict(value = "comments", key = "#commentCreateDTO.parentPostId")
     public void addCommentToPost(CommentCreateDTO commentCreateDTO) throws PostNotFoundException {
         User user = authenticatedUserService.getCurentUser();
         Post parentPost = postRepository.findById(commentCreateDTO.getParentPostId()).orElseThrow(() -> new PostNotFoundException());
@@ -70,6 +74,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
+    @CacheEvict(value = "comments", key = "#commentCreateDTO.parentPostId")
     public void addCommentToComment(CommentCreateDTO commentCreateDTO) throws PostNotFoundException, CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser();
         Post parentPost = postRepository.findById(commentCreateDTO.getParentPostId()).orElseThrow(() -> new PostNotFoundException());
@@ -89,6 +94,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
+    @CacheEvict(value = "comments", key = "#commentId")
     public void deleteComment(long commentId) throws CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser();
         Comment comment = commentRepository.findByUserAndId(user, commentId).orElseThrow(() -> new CommentNotFoundException());
