@@ -12,7 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.kradin.blog.dto.UserDTO;
+import ru.kradin.blog.dto.UserInfoDTO;
 import ru.kradin.blog.enums.Role;
 import ru.kradin.blog.exceptions.CommentNotFoundException;
 import ru.kradin.blog.models.Comment;
@@ -43,25 +43,25 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<UserDTO> getAllUsers() {
+    public List<UserInfoDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
-        List<UserDTO> userDTOS = modelMapper.map(users, new TypeToken<List<UserDTO>>() {}.getType());
+        List<UserInfoDTO> userDTOS = modelMapper.map(users, new TypeToken<List<UserInfoDTO>>() {}.getType());
         return userDTOS;
     }
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<UserDTO> getNonBannedUsers() {
+    public List<UserInfoDTO> getNonBannedUsers() {
         List<User> nonBannedUsers = userRepository.findByAccountNonLocked(true);
-        List<UserDTO> nonBannedUserDTOS = modelMapper.map(nonBannedUsers, new TypeToken<List<UserDTO>>() {}.getType());
+        List<UserInfoDTO> nonBannedUserDTOS = modelMapper.map(nonBannedUsers, new TypeToken<List<UserInfoDTO>>() {}.getType());
         return nonBannedUserDTOS;
     }
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<UserDTO> getBannedUsers() {
+    public List<UserInfoDTO> getBannedUsers() {
         List<User> bannedUsers = userRepository.findByAccountNonLocked(false);
-        List<UserDTO> bannedUserDTOS = modelMapper.map(bannedUsers, new TypeToken<List<UserDTO>>() {}.getType());
+        List<UserInfoDTO> bannedUserDTOS = modelMapper.map(bannedUsers, new TypeToken<List<UserInfoDTO>>() {}.getType());
         return bannedUserDTOS;
     }
 
@@ -88,7 +88,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    @Scheduled(fixedRate = 1000*60*60*24, initialDelay = 1000)
+    @Scheduled(fixedRate = 1000*60*60*24, initialDelay = 0)
     public void createAdminAccountIfNotExist() {
         List<User> userList = userRepository.findByRole(Role.ROLE_ADMIN);
         if(userList.isEmpty()){

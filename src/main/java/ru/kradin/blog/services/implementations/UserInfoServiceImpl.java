@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.dto.UserDTO;
+import ru.kradin.blog.dto.UserInfoDTO;
 import ru.kradin.blog.models.User;
 import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.services.interfaces.AuthenticatedUserService;
@@ -34,17 +35,17 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     @PreAuthorize("isAuthenticated()")
-    public UserDTO getUserInfo(Authentication authentication) {
-        User user = authenticatedUserService.getCurentUser(authentication);
-        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+    public UserInfoDTO getUserInfo() {
+        User user = authenticatedUserService.getCurentUser();
+        UserInfoDTO userDTO = modelMapper.map(user, UserInfoDTO.class);
         return userDTO;
     }
 
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public void updateEmail(Authentication authentication, String email) {
-        User user = authenticatedUserService.getCurentUser(authentication);
+    public void updateEmail(String email) {
+        User user = authenticatedUserService.getCurentUser();
 
         user.setEmail(email);
         user.setEmailVerified(false);
@@ -55,8 +56,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public void updatePassword(Authentication authentication, String password) {
-        User user = authenticatedUserService.getCurentUser(authentication);
+    public void updatePassword(String password) {
+        User user = authenticatedUserService.getCurentUser();
 
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);

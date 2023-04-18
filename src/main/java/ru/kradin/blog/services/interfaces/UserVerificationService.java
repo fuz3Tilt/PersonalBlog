@@ -1,6 +1,5 @@
 package ru.kradin.blog.services.interfaces;
 
-import org.springframework.security.core.Authentication;
 import ru.kradin.blog.exceptions.EmailAlreadyVerifiedException;
 import ru.kradin.blog.exceptions.UserDoesNotHaveEmailException;
 import ru.kradin.blog.exceptions.UserVerificationTokenAlreadyExistException;
@@ -9,7 +8,7 @@ import ru.kradin.blog.models.User;
 
 public interface UserVerificationService {
 
-    public void sendVerificationEmail(Authentication authentication) throws UserDoesNotHaveEmailException, EmailAlreadyVerifiedException, UserVerificationTokenAlreadyExistException;
+    public void sendVerificationEmail() throws UserDoesNotHaveEmailException, EmailAlreadyVerifiedException, UserVerificationTokenAlreadyExistException;
 
     public void sendVerificationEmail(User user) throws EmailAlreadyVerifiedException, UserDoesNotHaveEmailException, UserVerificationTokenAlreadyExistException;
 

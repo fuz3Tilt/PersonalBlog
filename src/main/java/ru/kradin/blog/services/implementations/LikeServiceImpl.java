@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.dto.LikeDTO;
 import ru.kradin.blog.exceptions.CommentNotFoundException;
@@ -56,8 +55,8 @@ public class LikeServiceImpl implements LikeService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public void togglePostLike(Authentication authentication, long postId) throws PostNotFoundException {
-        User user = authenticatedUserService.getCurentUser(authentication);
+    public void togglePostLike(long postId) throws PostNotFoundException {
+        User user = authenticatedUserService.getCurentUser();
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException());
 
         Optional<Like> likeOptional = likeRepository.findByUserAndPost(user, post);
@@ -72,14 +71,13 @@ public class LikeServiceImpl implements LikeService {
             likeRepository.save(like);
             log.info("Post {} was liked by {}", post.getId(), user.getUsername());
         }
-
     }
 
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public void toggleCommentLike(Authentication authentication, long commentID) throws CommentNotFoundException {
-        User user = authenticatedUserService.getCurentUser(authentication);
+    public void toggleCommentLike(long commentID) throws CommentNotFoundException {
+        User user = authenticatedUserService.getCurentUser();
         Comment comment = commentRepository.findById(commentID).orElseThrow(() -> new CommentNotFoundException());
 
         Optional<Like> likeOptional = likeRepository.findByUserAndComment(user, comment);

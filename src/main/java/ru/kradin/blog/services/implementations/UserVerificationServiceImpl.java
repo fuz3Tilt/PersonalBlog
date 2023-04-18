@@ -54,8 +54,8 @@ public class UserVerificationServiceImpl implements UserVerificationService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public void sendVerificationEmail(Authentication authentication) throws UserDoesNotHaveEmailException, EmailAlreadyVerifiedException, UserVerificationTokenAlreadyExistException {
-        User user = authenticatedUserService.getCurentUser(authentication);
+    public void sendVerificationEmail() throws UserDoesNotHaveEmailException, EmailAlreadyVerifiedException, UserVerificationTokenAlreadyExistException {
+        User user = authenticatedUserService.getCurentUser();
         sendVerificationEmailByUser(user);
     }
 

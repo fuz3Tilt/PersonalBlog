@@ -2,6 +2,7 @@ package ru.kradin.blog.services.implementations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.models.User;
@@ -17,7 +18,8 @@ public class AuthenticatedUserServiceImpl implements AuthenticatedUserService {
     UserRepository userRepository;
 
     @Override //Only for services
-    public User getCurentUser(Authentication authentication) {
+    public User getCurentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
 

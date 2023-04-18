@@ -1,14 +1,13 @@
 package ru.kradin.blog.services.interfaces;
 
-import org.springframework.security.core.Authentication;
-import ru.kradin.blog.dto.UserDTO;
+import ru.kradin.blog.dto.UserInfoDTO;
 
 public interface UserInfoService {
 
-    public UserDTO getUserInfo(Authentication authentication);
+    public UserInfoDTO getUserInfo();
 
-    public void updateEmail(Authentication authentication, String email);
+    public void updateEmail(String email);
 
-    public void updatePassword(Authentication authentication, String password);
+    public void updatePassword(String password);
 
 }

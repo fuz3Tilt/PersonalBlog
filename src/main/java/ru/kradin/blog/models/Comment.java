@@ -32,22 +32,6 @@ public class Comment {
     @Column(name = "expiry_date", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @PostLoad
-    private void onLoad() {
-        if (deleted) {
-            user.setId(0);
-            user.setEmail("none");
-            user.setUsername("none");
-            user.setPassword("none");
-            user.setCreatedAt(LocalDateTime.now());
-            text = "none";
-        } else {
-            user.setPassword("none");
-            user.setEmail("none");
-            user.setEmailVerified(false);
-        }
-    }
-
     public Comment() {
     }
 

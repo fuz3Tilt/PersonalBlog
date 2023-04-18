@@ -7,23 +7,13 @@ import java.time.LocalDateTime;
 public class UserDTO {
     private long id;
     private String username;
-    private String email;
-    private boolean emailVerified = false;
-    private boolean accountNonLocked = true;
-    private Role role;
-    private LocalDateTime createdAt;
 
     public UserDTO() {
     }
 
-    public UserDTO(long id, String username, String email, boolean emailVerified, boolean accountNonLocked, Role role, LocalDateTime createdAt) {
+    public UserDTO(long id, String username) {
         this.id = id;
         this.username = username;
-        this.email = email;
-        this.emailVerified = emailVerified;
-        this.accountNonLocked = accountNonLocked;
-        this.role = role;
-        this.createdAt = createdAt;
     }
 
     public long getId() {
@@ -40,45 +30,5 @@ public class UserDTO {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public boolean isEmailVerified() {
-        return emailVerified;
-    }
-
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
-    }
-
-    public boolean isAccountNonLocked() {
-        return accountNonLocked;
-    }
-
-    public void setAccountNonLocked(boolean accountNonLocked) {
-        this.accountNonLocked = accountNonLocked;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

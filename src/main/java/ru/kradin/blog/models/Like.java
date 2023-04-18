@@ -21,13 +21,6 @@ public class Like {
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @PostLoad
-    private void onLoad(){
-        user.setPassword("none");
-        user.setEmail("none");
-        user.setEmailVerified(false);
-    }
-
     public Like() {
     }
 
