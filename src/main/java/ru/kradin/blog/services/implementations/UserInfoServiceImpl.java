@@ -7,10 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.kradin.blog.dto.UserDTO;
+import ru.kradin.blog.dto.EmailDTO;
+import ru.kradin.blog.dto.PasswordDTO;
 import ru.kradin.blog.dto.UserInfoDTO;
 import ru.kradin.blog.models.User;
 import ru.kradin.blog.repositories.UserRepository;
@@ -44,10 +44,10 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public void updateEmail(String email) {
+    public void updateEmail(EmailDTO emailDTO) {
         User user = authenticatedUserService.getCurentUser();
 
-        user.setEmail(email);
+        user.setEmail(emailDTO.getEmail());
         user.setEmailVerified(false);
         userRepository.save(user);
         log.info("{} email updated.", user.getUsername());
@@ -56,10 +56,10 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public void updatePassword(String password) {
+    public void updatePassword(PasswordDTO passwordDTO) {
         User user = authenticatedUserService.getCurentUser();
 
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(passwordDTO.getPassword()));
         userRepository.save(user);
         log.info("{} password updated.", user.getUsername());
     }

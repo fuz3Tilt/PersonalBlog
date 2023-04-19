@@ -90,8 +90,9 @@ public class PostServiceImpl implements PostService {
             @CacheEvict(value = "likes", key = "#id")
     })
     @Transactional
-    public void deletePostById(long id) {
-        postRepository.deleteById(id);
+    public void deletePostById(long id) throws PostNotFoundException {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException());
+        postRepository.delete(post);
         log.info("Post with id {} deleted."+id);
     }
 }

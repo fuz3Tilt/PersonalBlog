@@ -48,9 +48,11 @@ public class LikeServiceImpl implements LikeService {
     private ModelMapper modelMapper;
 
     @Override
+    @Transactional
     @Cacheable(value = "likes", key = "#id")
-    public List<LikeDTO> getPostLikesByPostId(long id) {
-        List<Like> likes = likeRepository.findByPost_Id(id);
+    public List<LikeDTO> getPostLikesByPostId(long id) throws PostNotFoundException {
+        Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException());
+        List<Like> likes = post.getLikes();
         List<LikeDTO> likeDTOS = modelMapper.map(likes, new TypeToken<List<LikeDTO>>() {}.getType());
         return likeDTOS;
     }

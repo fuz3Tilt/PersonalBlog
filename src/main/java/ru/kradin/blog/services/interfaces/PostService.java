@@ -17,5 +17,5 @@ public interface PostService {
 
     public PostDTO updatePost(PostUpdateDTO postUpdateDTO) throws PostNotFoundException;
 
-    public void deletePostById(long id);
+    public void deletePostById(long id) throws PostNotFoundException;
 }

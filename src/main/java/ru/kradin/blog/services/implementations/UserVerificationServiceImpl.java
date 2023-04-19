@@ -9,6 +9,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kradin.blog.dto.EmailDTO;
+import ru.kradin.blog.dto.PasswordDTO;
 import ru.kradin.blog.enums.TokenPurpose;
 import ru.kradin.blog.exceptions.EmailAlreadyVerifiedException;
 import ru.kradin.blog.exceptions.UserDoesNotHaveEmailException;
@@ -87,7 +89,9 @@ public class UserVerificationServiceImpl implements UserVerificationService {
 
     @Override
     @Transactional
-    public void sendPasswordResetEmail(String email) {
+    public void sendPasswordResetEmail(EmailDTO emailDTO) {
+        String email = emailDTO.getEmail();
+
         Optional<User> userOptional = userRepository.findByEmail(email);
         if(userOptional.isEmpty())
             return;
@@ -118,7 +122,7 @@ public class UserVerificationServiceImpl implements UserVerificationService {
 
     @Override
     @Transactional
-    public void resetPasswordWithToken(String token, String password) throws UserVerificationTokenNotFoundException {
+    public void resetPasswordWithToken(String token, PasswordDTO passwordDTO) throws UserVerificationTokenNotFoundException {
         Optional<UserVerificationToken> userVerificationTokenOptional =
                 userVerificationTokenRepository.findByTokenAndTokenPurpose(token,TokenPurpose.PASSWORD_RESET);
 
@@ -131,7 +135,7 @@ public class UserVerificationServiceImpl implements UserVerificationService {
             throw new UserVerificationTokenNotFoundException();
 
         User user = userVerificationToken.getUser();
-        user.setPassword(passwordEncoder.encode(password));
+        user.setPassword(passwordEncoder.encode(passwordDTO.getPassword()));
         userRepository.save(user);
         userVerificationTokenRepository.delete(userVerificationToken);
         log.info("{} password updated.", user.getUsername());

@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.dto.UserInfoDTO;
 import ru.kradin.blog.enums.Role;
 import ru.kradin.blog.exceptions.CommentNotFoundException;
+import ru.kradin.blog.exceptions.UserNotFoundException;
 import ru.kradin.blog.models.Comment;
 import ru.kradin.blog.models.User;
 import ru.kradin.blog.repositories.CommentRepository;
@@ -43,6 +43,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public UserInfoDTO getUserById(long id) throws UserNotFoundException {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException());
+        return modelMapper.map(user, UserInfoDTO.class);
+    }
+    @Override
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<UserInfoDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserInfoDTO> userDTOS = modelMapper.map(users, new TypeToken<List<UserInfoDTO>>() {}.getType());
@@ -51,7 +57,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<UserInfoDTO> getNonBannedUsers() {
+    public List<UserInfoDTO> getActiveUsers() {
         List<User> nonBannedUsers = userRepository.findByAccountNonLocked(true);
         List<UserInfoDTO> nonBannedUserDTOS = modelMapper.map(nonBannedUsers, new TypeToken<List<UserInfoDTO>>() {}.getType());
         return nonBannedUserDTOS;
@@ -76,8 +82,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     @Transactional
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void toggleUserBan(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    public void toggleUserBan(String username) throws UserNotFoundException {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException());
         if (user.isAccountNonLocked()) {
             user.setAccountNonLocked(false);
         } else {

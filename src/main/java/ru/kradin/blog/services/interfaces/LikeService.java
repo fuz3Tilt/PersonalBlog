@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface LikeService {
 
-    public List<LikeDTO> getPostLikesByPostId(long id);
+    public List<LikeDTO> getPostLikesByPostId(long id) throws PostNotFoundException;
 
     public long togglePostLike(long postId) throws PostNotFoundException;
 

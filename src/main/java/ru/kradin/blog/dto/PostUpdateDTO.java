@@ -1,15 +1,18 @@
 package ru.kradin.blog.dto;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class PostUpdateDTO {
+    @NotNull(message = "ID cannot be null.")
+    @Min(value = 0, message = "ID must be greater than or equal to 0.")
     private long id;
-    @NotEmpty
-    @Size(min = 1, max = 255)
+
+    @NotBlank(message = "Title cannot be blank.")
+    @Size(min = 1, max = 255, message = "Title must be between 1 and 255 characters.")
     private String title;
-    @NotEmpty
-    @Size(min = 1, max = 50000)
+
+    @NotBlank(message = "Content cannot be blank.")
+    @Size(min = 1, max = 50000, message = "Content must be between 1 and 50000 characters.")
     private String content;
 
     public PostUpdateDTO() {
