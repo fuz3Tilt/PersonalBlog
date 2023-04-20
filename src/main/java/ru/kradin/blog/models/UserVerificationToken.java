@@ -18,7 +18,7 @@ public class UserVerificationToken {
     @Enumerated(EnumType.STRING)
     @Column(name = "token_purpose", nullable = false)
     private TokenPurpose tokenPurpose;
-    @Column(name = "expiry_date", nullable = false, columnDefinition = "TIMESTAMP")
+    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime expiryDate;
 
     public UserVerificationToken() {

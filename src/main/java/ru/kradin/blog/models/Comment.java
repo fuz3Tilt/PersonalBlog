@@ -29,7 +29,7 @@ public class Comment {
     private List<Like> likes;
     @Column(nullable = false)
     private boolean deleted;
-    @Column(name = "expiry_date", nullable = false, columnDefinition = "TIMESTAMP")
+    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
     public Comment() {
