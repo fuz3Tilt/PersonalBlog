@@ -15,9 +15,9 @@ RESTful приложение предоставляющее API для упра�
 - Spring Email
 - Hibernate
 - PostgreSQL
+- RESTful
 - JSON
 - JWT
-- RESTful
 - Maven
 - Junit
 ## Схема базы данных
