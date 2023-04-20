@@ -13,6 +13,7 @@ import ru.kradin.blog.dto.PostUpdateDTO;
 import ru.kradin.blog.exceptions.PostNotFoundException;
 import ru.kradin.blog.services.interfaces.PostService;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -92,7 +93,6 @@ class PostServiceImplTest {
             postService.getPostById(id3);
             fail("PostNotFoundException expected");
         } catch (PostNotFoundException e) {
-            // Получение всех постов и проверка их количества
             postDTOList = postService.getAllPosts();
             assertThat(postDTOList.size()).isEqualTo(1);
         }
@@ -111,10 +111,17 @@ class PostServiceImplTest {
             postService.getPostById(id4);
             fail("PostNotFoundException expected");
         } catch (PostNotFoundException e) {
-            // Получение всех постов и проверка их количества
             postDTOList = postService.getAllPosts();
             assertThat(postDTOList.size()).isEqualTo(0);
         }
+
+        postService.getAllPosts().stream().forEach(post -> {
+            try {
+                postService.deletePostById(post.getId());
+            } catch (PostNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 }

@@ -24,6 +24,7 @@ import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.services.interfaces.CommentService;
 import ru.kradin.blog.services.interfaces.PostService;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -121,5 +122,13 @@ class CommentServiceImplTest {
         assertFalse(commentDTOList.contains(newParentComment));
         Comment deletedParentComment = commentRepository.findById(newParentComment.getId()).orElseThrow(() -> new CommentNotFoundException());
         assertTrue(deletedParentComment.isDeleted());
+
+        postService.getAllPosts().stream().forEach(post -> {
+            try {
+                postService.deletePostById(post.getId());
+            } catch (PostNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

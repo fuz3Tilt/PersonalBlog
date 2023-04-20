@@ -21,6 +21,7 @@ import ru.kradin.blog.services.interfaces.CommentService;
 import ru.kradin.blog.services.interfaces.LikeService;
 import ru.kradin.blog.services.interfaces.PostService;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -100,5 +101,13 @@ public class LikeServiceImplTest {
         LikeDTO commentLike = commentLikes.get(0);
         assertEquals(user.getId(), commentLike.getUser().getId());
         assertEquals(savedComment.getId(), commentLike.getComment().getId());
+
+        postService.getAllPosts().stream().forEach(post -> {
+            try {
+                postService.deletePostById(post.getId());
+            } catch (PostNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

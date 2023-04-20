@@ -38,7 +38,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setAccountNonLocked(true);
         user.setRole(Role.ROLE_USER);
         user.setCreatedAt(LocalDateTime.now());
-        userRepository.save(user);
-        userVerificationService.sendVerificationEmail(userRepository.findByUsername(user.getUsername()).get());
+        user = userRepository.save(user);
+        userVerificationService.sendVerificationEmail(user);
     }
 }

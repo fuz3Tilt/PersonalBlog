@@ -1,0 +1,29 @@
+version: '3.5'
+
+services:
+  app:
+    container_name: app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    image: adoptopenjdk/openjdk11:alpine-jre
+    command: java -jar /app.jar
+    volumes:
+      - ./target/PersonalBlog-1.0-SNAPSHOT.jar:/app.jar
+
+  db:
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+    image: postgres:15.2
+
+volumes:
+  db_data:

@@ -28,13 +28,13 @@ class RegistrationServiceImplTest {
     @Test
     public void registrationServiceTest() throws EmailAlreadyVerifiedException, UserDoesNotHaveEmailException, UserVerificationTokenAlreadyExistException {
         UserRegistrationDTO userRegistrationDTO = new UserRegistrationDTO();
-        userRegistrationDTO.setUsername("User");
-        userRegistrationDTO.setEmail("some@mail.ru");
+        userRegistrationDTO.setUsername("superUniqueName");
+        userRegistrationDTO.setEmail("superUniqueEmail@somemail.ru");
         userRegistrationDTO.setPassword("password");
 
         registrationService.register(userRegistrationDTO);
 
-        User user = userRepository.findByUsername("User").orElseThrow(() -> new UsernameNotFoundException("User"));
+        User user = userRepository.findByUsername("superUniqueName").orElseThrow(() -> new UsernameNotFoundException("User"));
 
         assertEquals(user.getEmail(),userRegistrationDTO.getEmail());
         assertNotEquals(user.getPassword(),userRegistrationDTO.getPassword());
