@@ -16,7 +16,7 @@ RESTful приложение предоставляющее API для упра�
 - Hibernate
 - PostgreSQL
 - Docker
-- RESTful
+- REST
 - JSON
 - JWT
 - Maven
