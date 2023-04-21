@@ -4,8 +4,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 public class EmailDTO {
-    @NotNull
-    @Email
+    @NotNull(message = "Email cannot be null")
+    @Email(message = "Email should be valid")
     private String email;
 
     public EmailDTO() {

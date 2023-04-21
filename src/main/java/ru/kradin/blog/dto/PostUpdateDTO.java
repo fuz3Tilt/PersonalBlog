@@ -4,7 +4,7 @@ import javax.validation.constraints.*;
 
 public class PostUpdateDTO {
     @NotNull(message = "ID cannot be null.")
-    @Min(value = 0, message = "ID must be greater than or equal to 0.")
+    @Min(value = 1, message = "ID must be greater than or equal to 1.")
     private long id;
 
     @NotBlank(message = "Title cannot be blank.")

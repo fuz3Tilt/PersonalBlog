@@ -1,20 +1,19 @@
 package ru.kradin.blog.dto;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class UserRegistrationDTO {
-    @NotNull
-    @NotEmpty
-    @Size(min = 3, max = 20)
+
+    @NotBlank(message = "Username cannot be blank")
+    @Size(min = 3, max = 20, message = "Username must be between 3 and 20 characters")
     private String username;
-    @NotNull
-    @Size(min = 8, max = 255)
+
+    @NotBlank(message = "Password cannot be blank")
+    @Size(min = 8, max = 255, message = "Password must be between 8 and 255 characters")
     private String password;
-    @NotNull
-    @Email
+
+    @NotNull(message = "Email cannot be null")
+    @Email(message = "Email should be valid")
     private String email;
 
     public UserRegistrationDTO() {

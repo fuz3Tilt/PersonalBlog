@@ -1,18 +1,14 @@
 package ru.kradin.blog.dto;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class CommentCreateDTO {
-    @NotEmpty
-    @Size(min = 1, max = 1000)
+    @NotBlank(message = "Text cannot be blank")
+    @Size(min = 1, max = 1000, message = "Text must be between 1 and 1000 characters")
     private String text;
-    @NotEmpty
-    @Min(value = 0)
+    @Positive(message = "Parent post ID must be greater than 0")
     private long parentPostId;
-    @Min(value = 0)
+    @PositiveOrZero(message = "Parent comment ID must be greater than or equal to 0")
     private long parentCommentId;
 
     public CommentCreateDTO() {
