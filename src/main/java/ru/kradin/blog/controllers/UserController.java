@@ -18,7 +18,7 @@ import ru.kradin.blog.services.interfaces.UserVerificationService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/v1/user")
 public class UserController {
 
     @Autowired
@@ -74,7 +74,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/like")
+    @PostMapping("/likes")
     public ResponseEntity<?> toggleLike(@RequestParam("target") String target,
                                         @RequestParam("id") Long id) throws PostNotFoundException, CommentNotFoundException {
         switch (target) {
@@ -90,7 +90,7 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/comment")
+    @PostMapping("/comments")
     public ResponseEntity<?> addComment(@RequestBody @Valid CommentCreateDTO commentCreateDTO,
                                         BindingResult bindingResult) throws PostNotFoundException, CommentNotFoundException {
         if (bindingResult.hasErrors())
@@ -104,8 +104,8 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/comment")
-    public ResponseEntity<?> deleteComment(@RequestParam("id") long id) throws CommentNotFoundException {
+    @DeleteMapping("/comments/{id}")
+    public ResponseEntity<?> deleteComment(@PathVariable("id") long id) throws CommentNotFoundException {
         commentService.deleteComment(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

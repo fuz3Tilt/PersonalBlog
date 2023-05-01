@@ -13,7 +13,7 @@ import ru.kradin.blog.services.interfaces.UserVerificationService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/verification")
+@RequestMapping("/api/v1/verification")
 public class VerificationController {
 
     @Autowired
@@ -34,7 +34,8 @@ public class VerificationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PatchMapping ResponseEntity<?> resetPassword(@RequestParam("token") String token,
+    @PatchMapping("/password-reset")
+    public ResponseEntity<?> resetPassword(@RequestParam("token") String token,
                                                   @RequestBody @Valid PasswordDTO passwordDTO,
                                                   BindingResult bindingResult) throws UserVerificationTokenNotFoundException {
         if (bindingResult.hasErrors())
