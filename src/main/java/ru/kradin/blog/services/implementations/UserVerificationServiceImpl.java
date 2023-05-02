@@ -58,13 +58,31 @@ public class UserVerificationServiceImpl implements UserVerificationService {
     @PreAuthorize("isAuthenticated()")
     public void sendVerificationEmail() throws UserDoesNotHaveEmailException, EmailAlreadyVerifiedException, UserVerificationTokenAlreadyExistException {
         User user = authenticatedUserService.getCurentUser();
-        sendVerificationEmailByUser(user);
-    }
 
-    @Override
-    @Transactional //только для RegistrationService!!!
-    public void sendVerificationEmail(User user) throws EmailAlreadyVerifiedException, UserDoesNotHaveEmailException, UserVerificationTokenAlreadyExistException {
-        sendVerificationEmailByUser(user);
+        if (user.isEmailVerified())
+            throw new EmailAlreadyVerifiedException();
+
+        if (user.getEmail().isEmpty())
+            throw new UserDoesNotHaveEmailException();
+
+        Optional<UserVerificationToken> userVerificationTokenOptional
+                = userVerificationTokenRepository.findByUserAndTokenPurpose(user,TokenPurpose.EMAIL_CONFIRMATION);
+
+        if(userVerificationTokenOptional.isPresent()) {
+            UserVerificationToken userVerificationToken = userVerificationTokenOptional.get();
+            if(!isTokenExpired(userVerificationToken))
+                throw new UserVerificationTokenAlreadyExistException();
+        }
+
+        String token = generateVerificationToken(user,TokenPurpose.EMAIL_CONFIRMATION,5);
+        String confirmationUrl = emailVerifyUrl + token;
+
+        String email = user.getEmail();
+        String subject = "Подтвердите почту";
+        String text = "Пожалуйста, перейдите по ссылке чтобы подтвердить почту: "+confirmationUrl;
+
+        emailService.sendSimpleMessage(email,subject,text);
+        log.info("Verification email sent for {} .", user.getUsername());
     }
 
     @Override
@@ -139,33 +157,6 @@ public class UserVerificationServiceImpl implements UserVerificationService {
         userRepository.save(user);
         userVerificationTokenRepository.delete(userVerificationToken);
         log.info("{} password updated.", user.getUsername());
-    }
-
-    private void sendVerificationEmailByUser(User user) throws EmailAlreadyVerifiedException, UserDoesNotHaveEmailException, UserVerificationTokenAlreadyExistException {
-        if (user.isEmailVerified())
-            throw new EmailAlreadyVerifiedException();
-
-        if (user.getEmail().isEmpty())
-            throw new UserDoesNotHaveEmailException();
-
-        Optional<UserVerificationToken> userVerificationTokenOptional
-                = userVerificationTokenRepository.findByUserAndTokenPurpose(user,TokenPurpose.EMAIL_CONFIRMATION);
-
-        if(userVerificationTokenOptional.isPresent()) {
-            UserVerificationToken userVerificationToken = userVerificationTokenOptional.get();
-            if(!isTokenExpired(userVerificationToken))
-                throw new UserVerificationTokenAlreadyExistException();
-        }
-
-        String token = generateVerificationToken(user,TokenPurpose.EMAIL_CONFIRMATION,5);
-        String confirmationUrl = emailVerifyUrl + token;
-
-        String email = user.getEmail();
-        String subject = "Подтвердите почту";
-        String text = "Пожалуйста, перейдите по ссылке чтобы подтвердить почту: "+confirmationUrl;
-
-        emailService.sendSimpleMessage(email,subject,text);
-        log.info("Verification email sent for {} .", user.getUsername());
     }
 
     private String generateVerificationToken(User user, TokenPurpose tokenPurpose, int tokenLifetimeInMinutes){

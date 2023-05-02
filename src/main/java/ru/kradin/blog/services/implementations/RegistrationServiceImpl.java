@@ -1,6 +1,9 @@
 package ru.kradin.blog.services.implementations;
 
 import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,8 @@ import java.time.LocalDateTime;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
+    private static final Logger log = LoggerFactory.getLogger(RegistrationServiceImpl.class);
+
     @Autowired
     UserRepository userRepository;
 
@@ -29,7 +34,7 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     @Transactional
-    public void register(UserRegistrationDTO userRegistrationDTO) throws EmailAlreadyVerifiedException, UserDoesNotHaveEmailException, UserVerificationTokenAlreadyExistException {
+    public void register(UserRegistrationDTO userRegistrationDTO) {
         User user = new User();
         user.setUsername(userRegistrationDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userRegistrationDTO.getPassword()));
@@ -38,7 +43,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setAccountNonLocked(true);
         user.setRole(Role.ROLE_USER);
         user.setCreatedAt(LocalDateTime.now());
-        user = userRepository.save(user);
-        userVerificationService.sendVerificationEmail(user);
+        userRepository.save(user);
+        log.info("User {} created", user.getUsername());
     }
 }

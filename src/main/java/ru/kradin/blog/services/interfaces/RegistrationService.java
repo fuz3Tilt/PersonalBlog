@@ -6,5 +6,5 @@ import ru.kradin.blog.exceptions.UserDoesNotHaveEmailException;
 import ru.kradin.blog.exceptions.UserVerificationTokenAlreadyExistException;
 
 public interface RegistrationService {
-    public void register(UserRegistrationDTO userRegistrationDTO) throws EmailAlreadyVerifiedException, UserDoesNotHaveEmailException, UserVerificationTokenAlreadyExistException;
+    public void register(UserRegistrationDTO userRegistrationDTO);
 }

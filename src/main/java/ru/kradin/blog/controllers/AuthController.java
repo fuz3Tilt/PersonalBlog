@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.kradin.blog.dto.AuthenticationDTO;
 import ru.kradin.blog.dto.UserRegistrationDTO;
-import ru.kradin.blog.exceptions.EmailAlreadyVerifiedException;
-import ru.kradin.blog.exceptions.UserDoesNotHaveEmailException;
-import ru.kradin.blog.exceptions.UserVerificationTokenAlreadyExistException;
 import ru.kradin.blog.security.JWTUtil;
 import ru.kradin.blog.services.interfaces.RegistrationService;
 import ru.kradin.blog.utils.FieldErrorsUtil;
@@ -47,15 +44,7 @@ public class AuthController {
         if (bindingResult.hasErrors())
             return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
 
-        try {
-            registrationService.register(userRegistrationDTO);
-        } catch (EmailAlreadyVerifiedException e) {
-            return ResponseEntity.badRequest().body("Email already verified");
-        } catch (UserDoesNotHaveEmailException e) {
-            return ResponseEntity.badRequest().body("User does not have email");
-        } catch (UserVerificationTokenAlreadyExistException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Verification token already exists");
-        }
+        registrationService.register(userRegistrationDTO);
 
         String token = jwtUtil.generateToken(userRegistrationDTO.getUsername());
 
