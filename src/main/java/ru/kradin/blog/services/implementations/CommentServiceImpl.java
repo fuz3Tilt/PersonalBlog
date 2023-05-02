@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.dto.CommentCreateDTO;
 import ru.kradin.blog.dto.CommentDTO;
-import ru.kradin.blog.dto.PostDTO;
 import ru.kradin.blog.exceptions.CommentNotFoundException;
 import ru.kradin.blog.exceptions.PostNotFoundException;
 import ru.kradin.blog.models.Comment;
@@ -57,10 +56,16 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @PreAuthorize("isAuthenticated()")
     @CacheEvict(value = "comments", key = "#commentCreateDTO.parentPostId")
-    public void addCommentToPost(CommentCreateDTO commentCreateDTO) throws PostNotFoundException {
+    public void addComment(CommentCreateDTO commentCreateDTO) throws PostNotFoundException, CommentNotFoundException {
+        Comment comment = new Comment();
         User user = authenticatedUserService.getCurentUser();
         Post parentPost = postRepository.findById(commentCreateDTO.getParentPostId()).orElseThrow(() -> new PostNotFoundException());
-        Comment comment = new Comment();
+
+        if (commentCreateDTO.getParentCommentId()>0) {
+            Comment parentComment = commentRepository.findById(commentCreateDTO.getParentCommentId()).orElseThrow(() -> new CommentNotFoundException());
+            comment.setParentComment(parentComment);
+        }
+
         comment.setParentPost(parentPost);
         comment.setUser(user);
         comment.setText(commentCreateDTO.getText());
@@ -74,33 +79,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    @CacheEvict(value = "comments", key = "#commentCreateDTO.parentPostId")
-    public void addCommentToComment(CommentCreateDTO commentCreateDTO) throws PostNotFoundException, CommentNotFoundException {
-        User user = authenticatedUserService.getCurentUser();
-        Post parentPost = postRepository.findById(commentCreateDTO.getParentPostId()).orElseThrow(() -> new PostNotFoundException());
-        Comment parentComment = commentRepository.findById(commentCreateDTO.getParentCommentId()).orElseThrow(() -> new CommentNotFoundException());
-        Comment comment = new Comment();
-        comment.setParentPost(parentPost);
-        comment.setParentComment(parentComment);
-        comment.setUser(user);
-        comment.setText(commentCreateDTO.getText());
-        comment.setDeleted(false);
-        comment.setCreatedAt(LocalDateTime.now());
-        comment.setDepth(parentComment.getDepth()+1);
-        commentRepository.save(comment);
-        log.info("User {} added comment to comment with id {}", user.getUsername(), comment.getParentComment().getId());
-    }
-
-    @Override
-    @Transactional
-    @PreAuthorize("isAuthenticated()")
-    @CacheEvict(value = "comments", key = "#commentId")
-    public void deleteComment(long commentId) throws CommentNotFoundException {
+    @CacheEvict(value = "comments", key = "#result")
+    public long deleteComment(long commentId) throws CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser();
         Comment comment = commentRepository.findByUserAndId(user, commentId).orElseThrow(() -> new CommentNotFoundException());
         comment.setDeleted(true);
         comment.setText("deleted");
         commentRepository.save(comment);
         log.info("User {} deleted comment with id {}", user.getUsername(), comment.getId());
+        return comment.getParentPost().getId();
     }
 }

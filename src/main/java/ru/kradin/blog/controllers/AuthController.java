@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,9 +18,11 @@ import ru.kradin.blog.exceptions.UserDoesNotHaveEmailException;
 import ru.kradin.blog.exceptions.UserVerificationTokenAlreadyExistException;
 import ru.kradin.blog.security.JWTUtil;
 import ru.kradin.blog.services.interfaces.RegistrationService;
-import ru.kradin.blog.utlis.UserValidator;
+import ru.kradin.blog.utils.FieldErrorsUtil;
+import ru.kradin.blog.utils.UserValidator;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.Map;
 
 @RestController
@@ -43,25 +44,26 @@ public class AuthController {
 
         userValidator.validate(userRegistrationDTO, bindingResult);
 
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
-        }
+        if (bindingResult.hasErrors())
+            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
 
         try {
             registrationService.register(userRegistrationDTO);
         } catch (EmailAlreadyVerifiedException e) {
-            return new ResponseEntity<>("Email already verified", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body("Email already verified");
         } catch (UserDoesNotHaveEmailException e) {
-            return new ResponseEntity<>("User does not have email", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body("User does not have email");
         } catch (UserVerificationTokenAlreadyExistException e) {
-            return new ResponseEntity<>("Verification token already exists", HttpStatus.CONFLICT);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Verification token already exists");
         }
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        String token = jwtUtil.generateToken(userRegistrationDTO.getUsername());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("token", token));
     }
 
     @PostMapping("/login")
-    public Map<String, String> performLogin(@RequestBody AuthenticationDTO authenticationDTO) {
+    public ResponseEntity<?> performLogin(@RequestBody AuthenticationDTO authenticationDTO) {
         UsernamePasswordAuthenticationToken authInputToken =
                 new UsernamePasswordAuthenticationToken(authenticationDTO.getUsername(),
                         authenticationDTO.getPassword());
@@ -69,17 +71,11 @@ public class AuthController {
         try {
             authenticationManager.authenticate(authInputToken);
         } catch (BadCredentialsException e) {
-            return Map.of("message", "Incorrect credentials!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect credentials!");
         }
 
         String token = jwtUtil.generateToken(authenticationDTO.getUsername());
-        return Map.of("jwt-token", token);
-    }
 
-    @PostMapping("/refresh-token")
-    public Map<String, String> refreshToken() {
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        String newToken = jwtUtil.generateToken(username);
-        return Map.of("jwt-token", newToken);
+        return ResponseEntity.ok(Map.of("token", token));
     }
 }

@@ -13,8 +13,10 @@ import ru.kradin.blog.exceptions.PostNotFoundException;
 import ru.kradin.blog.exceptions.UserNotFoundException;
 import ru.kradin.blog.services.interfaces.AdminService;
 import ru.kradin.blog.services.interfaces.PostService;
+import ru.kradin.blog.utils.FieldErrorsUtil;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -30,41 +32,41 @@ public class AdminController {
     @PostMapping("/posts")
     public ResponseEntity<?> createPost(@RequestBody @Valid PostCreateDTO postCreateDTO,
                                         BindingResult bindingResult){
-        if (bindingResult.hasErrors()){
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
-        }
+        if (bindingResult.hasErrors())
+            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
 
         postService.createPost(postCreateDTO);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PatchMapping("/posts")
     public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDTO postUpdateDTO,
                                         BindingResult bindingResult) throws PostNotFoundException {
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
-        }
+        if (bindingResult.hasErrors())
+            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
+
         postService.updatePost(postUpdateDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/posts/{id}")
     public ResponseEntity<?> deletePost(@PathVariable("id") long id) throws PostNotFoundException {
         postService.deletePostById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/comments/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable("id") long id) throws CommentNotFoundException {
         adminService.deleteComment(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/users/ban")
     public ResponseEntity<?> toggleUserBan(@RequestParam("username") String username) throws UserNotFoundException {
-            adminService.toggleUserBan(username);
-        return new ResponseEntity<>(HttpStatus.OK);
+        adminService.toggleUserBan(username);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/users/{id}/info")

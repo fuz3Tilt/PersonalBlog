@@ -11,9 +11,7 @@ public interface CommentService {
 
     public List<CommentDTO> getPostCommentsByPostId(long id) throws PostNotFoundException;
 
-    public void addCommentToPost(CommentCreateDTO commentCreateDTO) throws PostNotFoundException;
+    public void addComment(CommentCreateDTO commentCreateDTO) throws PostNotFoundException, CommentNotFoundException;
 
-    public void addCommentToComment(CommentCreateDTO commentCreateDTO) throws PostNotFoundException, CommentNotFoundException;
-
-    public void deleteComment(long commentId) throws CommentNotFoundException;
+    public long deleteComment(long commentId) throws CommentNotFoundException;
 }

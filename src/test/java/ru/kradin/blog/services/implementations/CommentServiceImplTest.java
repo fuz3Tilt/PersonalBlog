@@ -24,7 +24,6 @@ import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.services.interfaces.CommentService;
 import ru.kradin.blog.services.interfaces.PostService;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -76,9 +75,9 @@ class CommentServiceImplTest {
         CommentCreateDTO commentCreateDTO1 = new CommentCreateDTO("text1", postDTO.getId(),0);
         CommentCreateDTO commentCreateDTO2 = new CommentCreateDTO("text2", postDTO.getId(),0);
         CommentCreateDTO commentCreateDTO3 = new CommentCreateDTO("text3", postDTO.getId(),0);
-        commentService.addCommentToPost(commentCreateDTO1);
-        commentService.addCommentToPost(commentCreateDTO2);
-        commentService.addCommentToPost(commentCreateDTO3);
+        commentService.addComment(commentCreateDTO1);
+        commentService.addComment(commentCreateDTO2);
+        commentService.addComment(commentCreateDTO3);
 
         List<CommentDTO> commentDTOList = commentService.getPostCommentsByPostId(postDTO.getId());
         long parentComment1 = commentDTOList.get(0).getId();
@@ -88,10 +87,10 @@ class CommentServiceImplTest {
         CommentCreateDTO commentCreateDTO5 = new CommentCreateDTO("text5", postDTO.getId(),parentComment1);
         CommentCreateDTO commentCreateDTO6 = new CommentCreateDTO("text6", postDTO.getId(),parentComment1);
         CommentCreateDTO commentCreateDTO7 = new CommentCreateDTO("text7", postDTO.getId(),parentComment2);
-        commentService.addCommentToComment(commentCreateDTO4);
-        commentService.addCommentToComment(commentCreateDTO5);
-        commentService.addCommentToComment(commentCreateDTO6);
-        commentService.addCommentToComment(commentCreateDTO7);
+        commentService.addComment(commentCreateDTO4);
+        commentService.addComment(commentCreateDTO5);
+        commentService.addComment(commentCreateDTO6);
+        commentService.addComment(commentCreateDTO7);
 
         commentDTOList = commentService.getPostCommentsByPostId(postDTO.getId());
 

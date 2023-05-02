@@ -21,7 +21,6 @@ import ru.kradin.blog.services.interfaces.CommentService;
 import ru.kradin.blog.services.interfaces.LikeService;
 import ru.kradin.blog.services.interfaces.PostService;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -87,7 +86,7 @@ public class LikeServiceImplTest {
         CommentCreateDTO commentCreateDTO = new CommentCreateDTO();
         commentCreateDTO.setParentPostId(savedPost.getId());
         commentCreateDTO.setText("Test Comment");
-        commentService.addCommentToPost(commentCreateDTO);
+        commentService.addComment(commentCreateDTO);
         List<CommentDTO> postComments = commentService.getPostCommentsByPostId(savedPost.getId());
         assertEquals(1,postComments.size());
         CommentDTO savedComment = postComments.get(0);

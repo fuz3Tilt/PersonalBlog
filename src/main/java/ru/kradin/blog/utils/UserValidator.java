@@ -1,4 +1,4 @@
-package ru.kradin.blog.utlis;
+package ru.kradin.blog.utils;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ru.kradin.blog.dto.UserDTO;
 import ru.kradin.blog.dto.UserRegistrationDTO;
 import ru.kradin.blog.models.User;
 

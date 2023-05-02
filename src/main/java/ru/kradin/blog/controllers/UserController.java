@@ -14,8 +14,10 @@ import ru.kradin.blog.services.interfaces.CommentService;
 import ru.kradin.blog.services.interfaces.LikeService;
 import ru.kradin.blog.services.interfaces.UserInfoService;
 import ru.kradin.blog.services.interfaces.UserVerificationService;
+import ru.kradin.blog.utils.FieldErrorsUtil;
 
 import javax.validation.Valid;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -42,11 +44,11 @@ public class UserController {
     public ResponseEntity< ? > changeEmail(@RequestBody @Valid EmailDTO emailDTO,
                                            BindingResult bindingResult){
         if (bindingResult.hasErrors())
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
 
         userInfoService.updateEmail(emailDTO);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/info/email/send-confirmation")
@@ -60,18 +62,18 @@ public class UserController {
         } catch (UserVerificationTokenAlreadyExistException e) {
             return new ResponseEntity<>("Verification token already exists", HttpStatus.CONFLICT);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/info/password")
     public ResponseEntity<?> changePassword(@RequestBody @Valid PasswordDTO passwordDTO,
                                          BindingResult bindingResult){
         if (bindingResult.hasErrors())
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
 
         userInfoService.updatePassword(passwordDTO);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/likes")
@@ -87,26 +89,22 @@ public class UserController {
             default:
                 throw new IllegalArgumentException("Invalid target: " + target);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/comments")
     public ResponseEntity<?> addComment(@RequestBody @Valid CommentCreateDTO commentCreateDTO,
                                         BindingResult bindingResult) throws PostNotFoundException, CommentNotFoundException {
         if (bindingResult.hasErrors())
-            return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
 
-        if (commentCreateDTO.getParentCommentId()==0) {
-            commentService.addCommentToPost(commentCreateDTO);
-        } else {
-            commentService.addCommentToComment(commentCreateDTO);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+        commentService.addComment(commentCreateDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/comments/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable("id") long id) throws CommentNotFoundException {
         commentService.deleteComment(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 }
