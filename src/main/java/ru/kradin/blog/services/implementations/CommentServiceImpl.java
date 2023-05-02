@@ -55,8 +55,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    @CacheEvict(value = "comments", key = "#commentCreateDTO.parentPostId")
-    public void addComment(CommentCreateDTO commentCreateDTO) throws PostNotFoundException, CommentNotFoundException {
+    @CacheEvict(value = "comments", key = "#result.parentPost.id")
+    public CommentDTO addComment(CommentCreateDTO commentCreateDTO) throws PostNotFoundException, CommentNotFoundException {
         Comment comment = new Comment();
         User user = authenticatedUserService.getCurentUser();
         Post parentPost = postRepository.findById(commentCreateDTO.getParentPostId()).orElseThrow(() -> new PostNotFoundException());
@@ -72,21 +72,26 @@ public class CommentServiceImpl implements CommentService {
         comment.setDeleted(false);
         comment.setCreatedAt(LocalDateTime.now());
         comment.setDepth(0);
-        commentRepository.save(comment);
+        comment = commentRepository.save(comment);
+
         log.info("User {} added comment to post with id {}",user.getUsername(),comment.getParentPost().getId());
+
+        return modelMapper.map(comment, CommentDTO.class);
     }
 
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    @CacheEvict(value = "comments", key = "#result")
-    public long deleteComment(long commentId) throws CommentNotFoundException {
+    @CacheEvict(value = "comments", key = "#result.parentPost.id")
+    public CommentDTO deleteComment(long commentId) throws CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser();
         Comment comment = commentRepository.findByUserAndId(user, commentId).orElseThrow(() -> new CommentNotFoundException());
         comment.setDeleted(true);
         comment.setText("deleted");
-        commentRepository.save(comment);
+        comment = commentRepository.save(comment);
+
         log.info("User {} deleted comment with id {}", user.getUsername(), comment.getId());
-        return comment.getParentPost().getId();
+
+        return modelMapper.map(comment, CommentDTO.class);
     }
 }

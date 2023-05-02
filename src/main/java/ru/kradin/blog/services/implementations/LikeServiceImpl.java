@@ -60,8 +60,8 @@ public class LikeServiceImpl implements LikeService {
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    @CacheEvict(value = "likes", key = "#result")
-    public long togglePostLike(long postId) throws PostNotFoundException {
+    @CacheEvict(value = "likes", key = "#result.post.id")
+    public LikeDTO togglePostLike(long postId) throws PostNotFoundException {
         User user = authenticatedUserService.getCurentUser();
         Post post = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException());
 
@@ -69,22 +69,25 @@ public class LikeServiceImpl implements LikeService {
         if(likeOptional.isPresent()){
             likeRepository.delete(likeOptional.get());
             log.info("Post {} was unliked by {}", post.getId(), user.getUsername());
+            return null;
         } else {
             Like like = new Like();
             like.setUser(user);
             like.setPost(post);
             like.setCreatedAt(LocalDateTime.now());
-            likeRepository.save(like);
+            like = likeRepository.save(like);
+
             log.info("Post {} was liked by {}", post.getId(), user.getUsername());
+
+            return modelMapper.map(like,LikeDTO.class);
         }
-        return post.getId();
     }
 
     @Override
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    @CacheEvict(value = "comments", key = "#result")
-    public long toggleCommentLike(long commentId) throws CommentNotFoundException {
+    @CacheEvict(value = "comments", key = "#result.comment.parentPost.id")
+    public LikeDTO toggleCommentLike(long commentId) throws CommentNotFoundException {
         User user = authenticatedUserService.getCurentUser();
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new CommentNotFoundException());
 
@@ -92,14 +95,17 @@ public class LikeServiceImpl implements LikeService {
         if (likeOptional.isPresent()) {
             likeRepository.delete(likeOptional.get());
             log.info("Comment {} was unliked by {}", comment.getId(), user.getUsername());
+            return null;
         } else {
             Like like = new Like();
             like.setUser(user);
             like.setComment(comment);
             like.setCreatedAt(LocalDateTime.now());
-            likeRepository.save(like);
+            like = likeRepository.save(like);
+
             log.info("Comment {} was liked by {}", comment.getId(), user.getUsername());
+
+            return modelMapper.map(like,LikeDTO.class);
         }
-        return comment.getParentPost().getId();
     }
 }
