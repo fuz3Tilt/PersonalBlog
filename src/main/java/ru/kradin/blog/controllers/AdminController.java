@@ -5,8 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kradin.blog.dto.PostCreateDTO;
-import ru.kradin.blog.dto.PostUpdateDTO;
+import ru.kradin.blog.dto.PostUpdateCreateDTO;
 import ru.kradin.blog.dto.UserInfoDTO;
 import ru.kradin.blog.exceptions.CommentNotFoundException;
 import ru.kradin.blog.exceptions.PostNotFoundException;
@@ -30,23 +29,24 @@ public class AdminController {
     PostService postService;
 
     @PostMapping("/posts")
-    public ResponseEntity<?> createPost(@RequestBody @Valid PostCreateDTO postCreateDTO,
+    public ResponseEntity<?> createPost(@RequestBody @Valid PostUpdateCreateDTO postUpdateCreateDTO,
                                         BindingResult bindingResult){
         if (bindingResult.hasErrors())
             return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
 
-        postService.createPost(postCreateDTO);
+        postService.createPost(postUpdateCreateDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PatchMapping("/posts")
-    public ResponseEntity<?> updatePost(@RequestBody @Valid PostUpdateDTO postUpdateDTO,
+    @PatchMapping("/posts/{id}")
+    public ResponseEntity<?> updatePost(@PathVariable("id") long id,
+                                        @RequestBody @Valid PostUpdateCreateDTO postUpdateCreateDTO,
                                         BindingResult bindingResult) throws PostNotFoundException {
         if (bindingResult.hasErrors())
             return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
 
-        postService.updatePost(postUpdateDTO);
+        postService.updatePost(id, postUpdateCreateDTO);
 
         return ResponseEntity.ok().build();
     }

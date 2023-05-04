@@ -7,13 +7,11 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
-import ru.kradin.blog.dto.PostCreateDTO;
+import ru.kradin.blog.dto.PostUpdateCreateDTO;
 import ru.kradin.blog.dto.PostDTO;
-import ru.kradin.blog.dto.PostUpdateDTO;
 import ru.kradin.blog.exceptions.PostNotFoundException;
 import ru.kradin.blog.services.interfaces.PostService;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -31,21 +29,21 @@ class PostServiceImplTest {
         Authentication auth = new TestingAuthenticationToken("username", "password", "ROLE_ADMIN");
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        PostCreateDTO postCreateDTO1 = new PostCreateDTO("title1", "content1");
-        PostCreateDTO postCreateDTO2 = new PostCreateDTO("title2", "content2");
-        PostCreateDTO postCreateDTO3 = new PostCreateDTO("title3", "content3");
-        PostCreateDTO postCreateDTO4 = new PostCreateDTO("title4", "content4");
-        postService.createPost(postCreateDTO1);
-        postService.createPost(postCreateDTO2);
-        postService.createPost(postCreateDTO3);
-        postService.createPost(postCreateDTO4);
+        PostUpdateCreateDTO postUpdateCreateDTO1 = new PostUpdateCreateDTO("title1", "content1");
+        PostUpdateCreateDTO postUpdateCreateDTO2 = new PostUpdateCreateDTO("title2", "content2");
+        PostUpdateCreateDTO postUpdateCreateDTO3 = new PostUpdateCreateDTO("title3", "content3");
+        PostUpdateCreateDTO postUpdateCreateDTO4 = new PostUpdateCreateDTO("title4", "content4");
+        postService.createPost(postUpdateCreateDTO1);
+        postService.createPost(postUpdateCreateDTO2);
+        postService.createPost(postUpdateCreateDTO3);
+        postService.createPost(postUpdateCreateDTO4);
 
         List<PostDTO> postDTOList = postService.getAllPosts();
         assertThat(postDTOList.size()).isEqualTo(4);
 
         long id1 = postDTOList.get(0).getId();
-        PostUpdateDTO postUpdateDTO1 = new PostUpdateDTO(id1, "updated title1", "updated content1");
-        postService.updatePost(postUpdateDTO1);
+        PostUpdateCreateDTO postUpdateDTO1 = new PostUpdateCreateDTO("updated title1", "updated content1");
+        postService.updatePost(id1, postUpdateDTO1);
 
         PostDTO postDTO1 = postService.getPostById(id1);
         assertThat(postDTO1.getTitle()).isEqualTo("updated title1");
@@ -62,8 +60,8 @@ class PostServiceImplTest {
         }
 
         long id2 = postDTOList.get(1).getId();
-        PostUpdateDTO postUpdateDTO2 = new PostUpdateDTO(id2, "updated title2", "updated content2");
-        postService.updatePost(postUpdateDTO2);
+        PostUpdateCreateDTO postUpdateDTO2 = new PostUpdateCreateDTO( "updated title2", "updated content2");
+        postService.updatePost(id2, postUpdateDTO2);
 
         PostDTO postDTO2 = postService.getPostById(id2);
         assertThat(postDTO2.getTitle()).isEqualTo("updated title2");
@@ -80,8 +78,8 @@ class PostServiceImplTest {
         }
 
         long id3 = postDTOList.get(0).getId();
-        PostUpdateDTO postUpdateDTO3 = new PostUpdateDTO(id3, "updated title3", "updated content3");
-        postService.updatePost(postUpdateDTO3);
+        PostUpdateCreateDTO postUpdateDTO3 = new PostUpdateCreateDTO("updated title3", "updated content3");
+        postService.updatePost(id3, postUpdateDTO3);
 
         PostDTO postDTO3 = postService.getPostById(id3);
         assertThat(postDTO3.getTitle()).isEqualTo("updated title3");
@@ -98,8 +96,8 @@ class PostServiceImplTest {
         }
 
         long id4 = postDTOList.get(0).getId();
-        PostUpdateDTO postUpdateDTO4 = new PostUpdateDTO(id4, "updated title4", "updated content4");
-        postService.updatePost(postUpdateDTO4);
+        PostUpdateCreateDTO postUpdateDTO4 = new PostUpdateCreateDTO("updated title4", "updated content4");
+        postService.updatePost(id4, postUpdateDTO4);
 
         PostDTO postDTO4 = postService.getPostById(id4);
         assertThat(postDTO4.getTitle()).isEqualTo("updated title4");

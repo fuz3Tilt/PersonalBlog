@@ -1,23 +1,20 @@
 package ru.kradin.blog.utils;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.kradin.blog.dto.UserRegistrationDTO;
 import ru.kradin.blog.models.User;
+import ru.kradin.blog.repositories.UserRepository;
+
+import java.util.Optional;
 
 @Component
 public class UserValidator implements Validator {
 
     @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private ModelMapper modelMapper;
+    private UserRepository userRepository;
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -27,14 +24,13 @@ public class UserValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         UserRegistrationDTO userRegistrationDTO = (UserRegistrationDTO) o;
-        User user = modelMapper.map(userRegistrationDTO,User.class);
 
-        try {
-            userDetailsService.loadUserByUsername(user.getUsername());
-        } catch (UsernameNotFoundException ignored) {
-            return;
-        }
+        Optional<User> userWithTheSameEmail = userRepository.findByEmail(userRegistrationDTO.getEmail());
+        if (userWithTheSameEmail.isPresent())
+            errors.rejectValue("email", "", "Email is already taken");
 
-        errors.rejectValue("username", "", "Username already exists");
+        Optional<User> userWithTheSameUsername = userRepository.findByUsername(userRegistrationDTO.getUsername());
+        if (userWithTheSameUsername.isPresent())
+            errors.rejectValue("username", "", "Username is already taken");
     }
 }

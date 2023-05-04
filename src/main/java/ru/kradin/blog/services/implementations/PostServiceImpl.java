@@ -13,9 +13,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import ru.kradin.blog.dto.PostCreateDTO;
+import ru.kradin.blog.dto.PostUpdateCreateDTO;
 import ru.kradin.blog.dto.PostDTO;
-import ru.kradin.blog.dto.PostUpdateDTO;
 import ru.kradin.blog.exceptions.PostNotFoundException;
 import ru.kradin.blog.models.Post;
 import ru.kradin.blog.repositories.PostRepository;
@@ -55,10 +54,10 @@ public class PostServiceImpl implements PostService {
     @Caching(put = {@CachePut(value = "post", key = "#result.id")},
             evict = {@CacheEvict(value = "posts", allEntries = true)})
     @Transactional
-    public PostDTO createPost(PostCreateDTO postCreateDTO) {
+    public PostDTO createPost(PostUpdateCreateDTO postUpdateCreateDTO) {
         Post post = new Post();
-        post.setTitle(postCreateDTO.getTitle());
-        post.setContent(postCreateDTO.getContent());
+        post.setTitle(postUpdateCreateDTO.getTitle());
+        post.setContent(postUpdateCreateDTO.getContent());
         post.setCreatedAt(LocalDateTime.now());
         post = postRepository.save(post);
         PostDTO postDTO = modelMapper.map(post,PostDTO.class);
@@ -71,10 +70,10 @@ public class PostServiceImpl implements PostService {
     @Caching(put = {@CachePut(value = "post", key = "#result.id")},
             evict = {@CacheEvict(value = "posts", allEntries = true)})
     @Transactional
-    public PostDTO updatePost(PostUpdateDTO postUpdateDTO) throws PostNotFoundException {
-        Post existingPost = postRepository.findById(postUpdateDTO.getId()).orElseThrow(() -> new PostNotFoundException());
-        existingPost.setTitle(postUpdateDTO.getTitle());
-        existingPost.setContent(postUpdateDTO.getContent());
+    public PostDTO updatePost(long id, PostUpdateCreateDTO postUpdateCreateDTO) throws PostNotFoundException {
+        Post existingPost = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException());
+        existingPost.setTitle(postUpdateCreateDTO.getTitle());
+        existingPost.setContent(postUpdateCreateDTO.getContent());
         existingPost = postRepository.save(existingPost);
         PostDTO postDTO = modelMapper.map(existingPost,PostDTO.class);
         log.info("Post with id {} updated."+existingPost.getId());

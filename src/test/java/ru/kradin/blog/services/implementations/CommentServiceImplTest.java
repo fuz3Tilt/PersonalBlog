@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.TestPropertySource;
 import ru.kradin.blog.dto.CommentCreateDTO;
 import ru.kradin.blog.dto.CommentDTO;
-import ru.kradin.blog.dto.PostCreateDTO;
+import ru.kradin.blog.dto.PostUpdateCreateDTO;
 import ru.kradin.blog.dto.PostDTO;
 import ru.kradin.blog.enums.Role;
 import ru.kradin.blog.exceptions.CommentNotFoundException;
@@ -69,8 +69,8 @@ class CommentServiceImplTest {
         Authentication authentication = authenticationManager.authenticate(authRequest);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        PostCreateDTO postCreateDTO = new PostCreateDTO("title","content");
-        PostDTO postDTO = postService.createPost(postCreateDTO);
+        PostUpdateCreateDTO postUpdateCreateDTO = new PostUpdateCreateDTO("title","content");
+        PostDTO postDTO = postService.createPost(postUpdateCreateDTO);
 
         CommentCreateDTO commentCreateDTO1 = new CommentCreateDTO("text1", postDTO.getId(),0);
         CommentCreateDTO commentCreateDTO2 = new CommentCreateDTO("text2", postDTO.getId(),0);

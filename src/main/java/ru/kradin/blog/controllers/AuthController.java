@@ -48,7 +48,7 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(userRegistrationDTO.getUsername());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("token", token));
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("JWT-token", token));
     }
 
     @PostMapping("/login")
@@ -60,11 +60,11 @@ public class AuthController {
         try {
             authenticationManager.authenticate(authInputToken);
         } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Incorrect credentials!");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Incorrect credentials!"));
         }
 
         String token = jwtUtil.generateToken(authenticationDTO.getUsername());
 
-        return ResponseEntity.ok(Map.of("token", token));
+        return ResponseEntity.ok(Map.of("JWT-token", token));
     }
 }

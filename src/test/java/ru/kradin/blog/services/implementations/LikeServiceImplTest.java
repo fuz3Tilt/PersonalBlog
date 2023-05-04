@@ -70,10 +70,10 @@ public class LikeServiceImplTest {
         Authentication authentication = authenticationManager.authenticate(authRequest);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        PostCreateDTO postCreateDTO = new PostCreateDTO();
-        postCreateDTO.setTitle("Test Post");
-        postCreateDTO.setContent("Test Content");
-        PostDTO savedPost = postService.createPost(postCreateDTO);
+        PostUpdateCreateDTO postUpdateCreateDTO = new PostUpdateCreateDTO();
+        postUpdateCreateDTO.setTitle("Test Post");
+        postUpdateCreateDTO.setContent("Test Content");
+        PostDTO savedPost = postService.createPost(postUpdateCreateDTO);
 
         likeService.togglePostLike(savedPost.getId());
 

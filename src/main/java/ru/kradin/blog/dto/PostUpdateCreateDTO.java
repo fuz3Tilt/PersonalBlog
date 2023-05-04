@@ -5,7 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-public class PostCreateDTO {
+public class PostUpdateCreateDTO {
     @NotNull(message = "Title cannot be null")
     @NotEmpty(message = "Title cannot be empty")
     @NotBlank(message = "Title cannot be blank.")
@@ -18,10 +18,10 @@ public class PostCreateDTO {
     @Size(min = 1, max = 50000, message = "Content must be between 1 and 50000 characters.")
     private String content;
 
-    public PostCreateDTO() {
+    public PostUpdateCreateDTO() {
     }
 
-    public PostCreateDTO(String title, String content) {
+    public PostUpdateCreateDTO(String title, String content) {
         this.title = title;
         this.content = content;
     }
