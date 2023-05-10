@@ -1,0 +1,186 @@
+openapi: 3.0.0
+info: 
+  title: Personal blog API
+  version: 0.0.1
+servers:
+- url: http://localhost:5432/api/v1
+paths:
+  /auth/login:
+    post: 
+      summary: Sign in
+      tags:
+        - Auth
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationDTO'
+      responses:
+        200:
+          description: Return JWT-token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringMap'
+              example:
+                JWT-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJpc3MiOiJrcmFkaW4iLCJleHAiOjE2ODU3OTAxMzMsImlhdCI6MTY4MzE5ODEzMywidXNlcm5hbWUiOiJhZG1pbiJ9.6eN1262cFUclF23eSQyPL3GHAT4Q_x1Q7HdWDVkL-oI
+        401:
+          description: Return message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringMap'
+              example:
+                message: Incorrect credentials!
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+              example:
+                timestamp: 2023-05-03T14:27:04.003+00:00
+                status: 400
+                error: Bad Request
+                path: /api/v1/auth/login
+  /auth/registration:
+    post:
+      summary: Sign up
+      tags:
+        - Auth
+      operationId: registr
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationDTO'
+      responses:
+        201:
+          description: Return JWT-token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringMap'
+              example:
+               JWT-token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJpc3MiOiJrcmFkaW4iLCJleHAiOjE2ODU3OTAxMzMsImlhdCI6MTY4MzE5ODEzMywidXNlcm5hbWUiOiJhZG1pbiJ9.6eN1262cFUclF23eSQyPL3GHAT4Q_x1Q7HdWDVkL-oI
+        400:
+          description: Return field errors if exist
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StringMapMap'
+              example:
+                errors:
+                  password:
+                    - "Password cannot be null"
+                    - "Password cannot be blank"
+                    - "Password cannot be empty"
+                    - "Password must be between 8 and 255 characters"
+                  email:
+                    - "Email is already taken"
+                    - "Email should be valid"
+                    - "Email cannot be null"
+                    - "Email cannot be empty"
+                  username:
+                    - "Username is already taken"
+                    - "Username cannot be null"
+                    - "Username cannot be blank"
+                    - "Username cannot be empty"
+                    - "Username must be between 3 and 20 characters"
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+              example:
+                timestamp: 2023-05-03T14:27:04.003+00:00
+                status: 400
+                error: Bad Request
+                path: /api/v1/auth/registration
+  /admin/posts:
+    post:
+      summary: Create post
+      tags:
+      - Admin
+      - Posts
+      operationId: create
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUpdateCreateDTO'
+      security:
+      - Authorization: []
+      responses:
+        201:
+          description: Created
+components:
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJpc3MiOiJrcmFkaW4iLCJleHAiOjE2ODU4MDI2MTksImlhdCI6MTY4MzIxMDYxOSwidXNlcm5hbWUiOiJhZG1pbiJ9.5x842qIuXO73UQuWW5l2GTr8viysVUfzAFaQ4hk-Xa4
+  schemas:
+    StringMap:
+      type: object
+      additionalProperties:
+        type: string
+    StringMapMap:
+      type: object
+      additionalProperties:
+        type: object
+        additionalProperties:
+          type: array
+          items:
+            type: string
+    Response:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        path:
+          type: string
+    AuthenticationDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "admin"
+        password:
+          type: string
+          example: "admin"
+    RegistrationDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "user"
+        password:
+          type: string
+          example: "password"
+        email:
+          type: string
+          example: "some@user.mail"
+    PostUpdateCreateDTO:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "title"
+        content:
+          type: string
+          example: "content"
+        
+          
+          
