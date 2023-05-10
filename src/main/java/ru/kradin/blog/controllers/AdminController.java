@@ -15,7 +15,6 @@ import ru.kradin.blog.services.interfaces.PostService;
 import ru.kradin.blog.utils.FieldErrorsUtil;
 
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -32,7 +31,7 @@ public class AdminController {
     public ResponseEntity<?> createPost(@RequestBody @Valid PostUpdateCreateDTO postUpdateCreateDTO,
                                         BindingResult bindingResult){
         if (bindingResult.hasErrors())
-            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
+            return ResponseEntity.badRequest().body(FieldErrorsUtil.getErrors(bindingResult));
 
         postService.createPost(postUpdateCreateDTO);
 
@@ -44,7 +43,7 @@ public class AdminController {
                                         @RequestBody @Valid PostUpdateCreateDTO postUpdateCreateDTO,
                                         BindingResult bindingResult) throws PostNotFoundException {
         if (bindingResult.hasErrors())
-            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
+            return ResponseEntity.badRequest().body(FieldErrorsUtil.getErrors(bindingResult));
 
         postService.updatePost(id, postUpdateCreateDTO);
 

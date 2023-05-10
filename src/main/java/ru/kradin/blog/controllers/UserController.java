@@ -17,7 +17,6 @@ import ru.kradin.blog.services.interfaces.UserVerificationService;
 import ru.kradin.blog.utils.FieldErrorsUtil;
 
 import javax.validation.Valid;
-import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -44,7 +43,7 @@ public class UserController {
     public ResponseEntity< ? > changeEmail(@RequestBody @Valid EmailDTO emailDTO,
                                            BindingResult bindingResult){
         if (bindingResult.hasErrors())
-            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
+            return ResponseEntity.badRequest().body(FieldErrorsUtil.getErrors(bindingResult));
 
         userInfoService.updateEmail(emailDTO);
 
@@ -69,7 +68,7 @@ public class UserController {
     public ResponseEntity<?> changePassword(@RequestBody @Valid PasswordDTO passwordDTO,
                                          BindingResult bindingResult){
         if (bindingResult.hasErrors())
-            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
+            return ResponseEntity.badRequest().body(FieldErrorsUtil.getErrors(bindingResult));
 
         userInfoService.updatePassword(passwordDTO);
 
@@ -96,7 +95,7 @@ public class UserController {
     public ResponseEntity<?> addComment(@RequestBody @Valid CommentCreateDTO commentCreateDTO,
                                         BindingResult bindingResult) throws PostNotFoundException, CommentNotFoundException {
         if (bindingResult.hasErrors())
-            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
+            return ResponseEntity.badRequest().body(FieldErrorsUtil.getErrors(bindingResult));
 
         commentService.addComment(commentCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();

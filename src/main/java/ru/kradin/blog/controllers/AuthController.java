@@ -19,7 +19,6 @@ import ru.kradin.blog.utils.FieldErrorsUtil;
 import ru.kradin.blog.utils.UserValidator;
 
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.Map;
 
 @RestController
@@ -42,7 +41,7 @@ public class AuthController {
         userValidator.validate(userRegistrationDTO, bindingResult);
 
         if (bindingResult.hasErrors())
-            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
+            return ResponseEntity.badRequest().body(FieldErrorsUtil.getErrors(bindingResult));
 
         registrationService.register(userRegistrationDTO);
 

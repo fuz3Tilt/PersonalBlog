@@ -11,7 +11,6 @@ import ru.kradin.blog.services.interfaces.UserVerificationService;
 import ru.kradin.blog.utils.FieldErrorsUtil;
 
 import javax.validation.Valid;
-import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/v1/verification")
@@ -30,7 +29,7 @@ public class VerificationController {
     public ResponseEntity<?> sendPasswordResetEmail(@RequestBody @Valid EmailDTO emailDTO,
                                                     BindingResult bindingResult){
         if (bindingResult.hasErrors())
-            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
+            return ResponseEntity.badRequest().body(FieldErrorsUtil.getErrors(bindingResult));
 
         userVerificationService.sendPasswordResetEmail(emailDTO);
         return ResponseEntity.ok().build();
@@ -41,7 +40,7 @@ public class VerificationController {
                                                   @RequestBody @Valid PasswordDTO passwordDTO,
                                                   BindingResult bindingResult) throws UserVerificationTokenNotFoundException {
         if (bindingResult.hasErrors())
-            return ResponseEntity.badRequest().body(Collections.singletonMap("errors", FieldErrorsUtil.getErrors(bindingResult)));
+            return ResponseEntity.badRequest().body(FieldErrorsUtil.getErrors(bindingResult));
 
         userVerificationService.resetPasswordWithToken(token,passwordDTO);
 
