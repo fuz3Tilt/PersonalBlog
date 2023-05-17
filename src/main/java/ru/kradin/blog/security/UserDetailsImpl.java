@@ -8,6 +8,9 @@ import ru.kradin.blog.models.User;
 import java.util.Collection;
 import java.util.Collections;
 
+/*
+    Spring security stuff
+ */
 public class UserDetailsImpl implements UserDetails {
 
     private User user;

@@ -7,6 +7,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.services.interfaces.EmailService;
 
+/*
+    Service for sending messages to the email
+ */
 @Service
 public class EmailServiceImpl implements EmailService {
 

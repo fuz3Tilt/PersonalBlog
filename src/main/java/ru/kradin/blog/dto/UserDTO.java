@@ -1,19 +1,21 @@
 package ru.kradin.blog.dto;
 
 import ru.kradin.blog.enums.Role;
-
-import java.time.LocalDateTime;
-
+/*
+    Uses into other DTOs
+ */
 public class UserDTO {
     private long id;
     private String username;
+    private Role role;
 
     public UserDTO() {
     }
 
-    public UserDTO(long id, String username) {
+    public UserDTO(long id, String username, Role role) {
         this.id = id;
         this.username = username;
+        this.role = role;
     }
 
     public long getId() {
@@ -30,5 +32,13 @@ public class UserDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

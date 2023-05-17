@@ -9,7 +9,9 @@ import ru.kradin.blog.models.User;
 import ru.kradin.blog.repositories.UserRepository;
 
 import java.util.Optional;
-
+/*
+    Class for checking user data for uniqueness
+ */
 @Component
 public class UserValidator implements Validator {
 
@@ -21,6 +23,7 @@ public class UserValidator implements Validator {
         return UserRegistrationDTO.class.equals(aClass);
     }
 
+    //Add field errors about not unique data into BindingResult
     @Override
     public void validate(Object o, Errors errors) {
         UserRegistrationDTO userRegistrationDTO = (UserRegistrationDTO) o;

@@ -11,6 +11,9 @@ import ru.kradin.blog.security.UserDetailsImpl;
 
 import java.util.Optional;
 
+/*
+    Spring security stuff
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 

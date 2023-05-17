@@ -28,6 +28,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+/*
+    Service for sending verification emails
+    Uses for password reset and email verification
+ */
 @Service
 public class UserVerificationServiceImpl implements UserVerificationService {
     private static final Logger log = LoggerFactory.getLogger(UserVerificationServiceImpl.class);

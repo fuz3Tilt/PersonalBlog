@@ -17,6 +17,9 @@ import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.services.interfaces.AuthenticatedUserService;
 import ru.kradin.blog.services.interfaces.UserInfoService;
 
+/*
+    Service for getting and changing information about the current user
+ */
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
     private static final Logger log = LoggerFactory.getLogger(UserInfoServiceImpl.class);

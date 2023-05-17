@@ -10,6 +10,9 @@ import ru.kradin.blog.repositories.UserVerificationTokenRepository;
 
 import java.time.LocalDateTime;
 
+/*
+    Service for managing verification tokens
+ */
 @Service
 public class UserVerificationTokenServiceImpl {
     private static final Logger log = LoggerFactory.getLogger(UserVerificationTokenServiceImpl.class);

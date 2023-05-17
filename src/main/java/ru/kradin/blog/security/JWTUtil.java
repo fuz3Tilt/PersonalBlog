@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+/*
+    Component for generating and validating JWT tokens
+ */
 @Component
 public class JWTUtil {
 

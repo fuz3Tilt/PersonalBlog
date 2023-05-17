@@ -2,7 +2,9 @@ package ru.kradin.blog.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-
+/*
+    Uses for updating user email
+ */
 public class EmailDTO {
     @NotNull(message = "Email cannot be null")
     @Email(message = "Email should be valid")

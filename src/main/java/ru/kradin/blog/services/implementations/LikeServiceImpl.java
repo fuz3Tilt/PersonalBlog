@@ -28,6 +28,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/*
+    Service for liking and getting likes of the post
+ */
 @Service
 public class LikeServiceImpl implements LikeService {
     private static final Logger log = LoggerFactory.getLogger(LikeServiceImpl.class);

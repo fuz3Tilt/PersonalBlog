@@ -23,6 +23,9 @@ import ru.kradin.blog.services.interfaces.PostService;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/*
+    Service for creating and getting blog posts
+ */
 @Service
 public class PostServiceImpl implements PostService {
     private static final Logger log = LoggerFactory.getLogger(PostServiceImpl.class);

@@ -3,7 +3,9 @@ package ru.kradin.blog.dto;
 import ru.kradin.blog.enums.Role;
 
 import java.time.LocalDateTime;
-
+/*
+    Uses for current user and admins
+ */
 public class UserInfoDTO {
     private long id;
     private String username;

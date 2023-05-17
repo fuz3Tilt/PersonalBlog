@@ -5,6 +5,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+/*
+    Uses for updating user password
+ */
 public class PasswordDTO {
     @NotNull(message = "Password cannot be null")
     @NotEmpty(message = "Password cannot be empty")

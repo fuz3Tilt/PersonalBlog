@@ -23,7 +23,9 @@ import ru.kradin.blog.services.interfaces.AdminService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+/*
+    Service for controlling users and comments
+ */
 @Service
 public class AdminServiceImpl implements AdminService {
 

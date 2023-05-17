@@ -15,7 +15,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+/*
+    Spring security uses this for authentication checking
+ */
 @Component
 public class JWTFilter extends OncePerRequestFilter {
 

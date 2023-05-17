@@ -9,13 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kradin.blog.dto.UserRegistrationDTO;
 import ru.kradin.blog.enums.Role;
-import ru.kradin.blog.exceptions.EmailAlreadyVerifiedException;
-import ru.kradin.blog.exceptions.UserDoesNotHaveEmailException;
-import ru.kradin.blog.exceptions.UserVerificationTokenAlreadyExistException;
 import ru.kradin.blog.models.User;
 import ru.kradin.blog.repositories.UserRepository;
 import ru.kradin.blog.services.interfaces.RegistrationService;
-import ru.kradin.blog.services.interfaces.UserVerificationService;
 
 import java.time.LocalDateTime;
 
@@ -28,9 +24,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Autowired
     PasswordEncoder passwordEncoder;
-
-    @Autowired
-    UserVerificationService userVerificationService;
 
     @Override
     @Transactional

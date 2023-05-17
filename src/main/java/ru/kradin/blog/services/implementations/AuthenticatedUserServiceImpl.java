@@ -11,13 +11,16 @@ import ru.kradin.blog.services.interfaces.AuthenticatedUserService;
 
 import java.util.Optional;
 
-@Service //Only for services
+/*
+    Use only for other services
+ */
+@Service
 public class AuthenticatedUserServiceImpl implements AuthenticatedUserService {
 
     @Autowired
     UserRepository userRepository;
 
-    @Override //Only for services
+    @Override
     public User getCurentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

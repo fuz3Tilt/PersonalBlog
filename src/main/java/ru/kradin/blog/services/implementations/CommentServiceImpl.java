@@ -25,7 +25,9 @@ import ru.kradin.blog.services.interfaces.AuthenticatedUserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
+/*
+    Service for commenting and getting comments of the post
+ */
 @Service
 public class CommentServiceImpl implements CommentService {
     private static final Logger log = LoggerFactory.getLogger(CommentServiceImpl.class);

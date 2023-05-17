@@ -4,7 +4,9 @@ import javax.persistence.*;
 import ru.kradin.blog.enums.TokenPurpose;
 
 import java.time.LocalDateTime;
-
+/*
+    Entity can use for verifying any data
+ */
 @Entity
 public class UserVerificationToken {
     @Id
