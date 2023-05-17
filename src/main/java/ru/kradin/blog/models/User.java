@@ -7,10 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "usr")
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+public class User extends SuperEntity {
     @Column(unique = true, nullable = false)
     private String email;
     @Column(name = "email_verified", nullable = false)
@@ -31,7 +28,7 @@ public class User {
     }
 
     public User(long id, String email, boolean emailVerified, String username, String password, boolean accountNonLocked, Role role, LocalDateTime createdAt) {
-        this.id = id;
+        super.setId(id);
         this.email = email;
         this.emailVerified = emailVerified;
         this.username = username;
@@ -42,11 +39,11 @@ public class User {
     }
 
     public long getId() {
-        return id;
+        return super.getId();
     }
 
     public void setId(long id) {
-        this.id = id;
+        super.setId(id);
     }
 
     public String getEmail() {

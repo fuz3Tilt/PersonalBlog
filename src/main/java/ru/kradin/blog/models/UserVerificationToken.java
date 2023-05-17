@@ -8,10 +8,7 @@ import java.time.LocalDateTime;
     Entity can use for verifying any data
  */
 @Entity
-public class UserVerificationToken {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+public class UserVerificationToken extends SuperEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -27,7 +24,7 @@ public class UserVerificationToken {
     }
 
     public UserVerificationToken(long id, User user, String token, TokenPurpose tokenPurpose, LocalDateTime expiryDate) {
-        this.id = id;
+        super.setId(id);
         this.user = user;
         this.token = token;
         this.tokenPurpose = tokenPurpose;
@@ -35,11 +32,11 @@ public class UserVerificationToken {
     }
 
     public long getId() {
-        return id;
+        return super.getId();
     }
 
     public void setId(long id) {
-        this.id = id;
+        super.setId(id);
     }
 
     public User getUser() {

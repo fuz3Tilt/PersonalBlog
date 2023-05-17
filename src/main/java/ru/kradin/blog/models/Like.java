@@ -5,10 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_like")
-public class Like {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+public class Like extends SuperEntity {
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = true)
     private Post post;
@@ -25,7 +22,7 @@ public class Like {
     }
 
     public Like(long id, Post post, Comment comment, User user, LocalDateTime createdAt) {
-        this.id = id;
+        super.setId(id);
         this.post = post;
         this.comment = comment;
         this.user = user;
@@ -33,11 +30,11 @@ public class Like {
     }
 
     public long getId() {
-        return id;
+        return super.getId();
     }
 
     public void setId(long id) {
-        this.id = id;
+        super.setId(id);
     }
 
     public Post getPost() {

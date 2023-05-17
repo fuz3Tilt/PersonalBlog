@@ -6,10 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+public class Comment extends SuperEntity {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -36,7 +33,7 @@ public class Comment {
     }
 
     public Comment(long id, User user, String text, int depth, Post parentPost, Comment parentComment, List<Comment> replies, List<Like> likes, boolean deleted, LocalDateTime createdAt) {
-        this.id = id;
+        super.setId(id);
         this.user = user;
         this.text = text;
         this.depth = depth;
@@ -49,11 +46,11 @@ public class Comment {
     }
 
     public long getId() {
-        return id;
+        return super.getId();
     }
 
     public void setId(long id) {
-        this.id = id;
+        super.setId(id);
     }
 
     public User getUser() {

@@ -6,10 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-public class Post {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+public class Post extends SuperEntity {
     @Column(nullable = false)
     private String title;
     @Column(length = 50000,nullable = false)
@@ -25,7 +22,7 @@ public class Post {
     }
 
     public Post(long id, String title, String content, List<Comment> comments, List<Like> likes, LocalDateTime createdAt) {
-        this.id = id;
+        super.setId(id);
         this.title = title;
         this.content = content;
         this.comments = comments;
@@ -34,11 +31,11 @@ public class Post {
     }
 
     public long getId() {
-        return id;
+        return super.getId();
     }
 
     public void setId(long id) {
-        this.id = id;
+        super.setId(id);
     }
 
     public String getTitle() {
