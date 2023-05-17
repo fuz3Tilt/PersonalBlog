@@ -2,7 +2,9 @@ package ru.kradin.blog.models;
 
 import javax.persistence.*;
 import java.util.Objects;
-
+/*
+    Superclass for all entities
+ */
 @MappedSuperclass
 public abstract class SuperEntity {
 
