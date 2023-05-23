@@ -7,7 +7,9 @@ import ru.kradin.blog.exceptions.CommentNotFoundException;
 import ru.kradin.blog.exceptions.PostNotFoundException;
 import ru.kradin.blog.exceptions.UserNotFoundException;
 import ru.kradin.blog.exceptions.UserVerificationTokenNotFoundException;
+import springfox.documentation.annotations.ApiIgnore;
 
+@ApiIgnore
 @ControllerAdvice
 public class ControllerAdviceExceptionHandler {
 
