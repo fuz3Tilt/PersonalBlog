@@ -13,6 +13,7 @@ RESTful приложение предоставляющее API для упра�
 - Spring Data JPA
 - Spring Cache
 - Spring Email
+- Swagger
 - Hibernate
 - PostgreSQL
 - Docker
